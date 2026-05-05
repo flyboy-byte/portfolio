@@ -15,7 +15,7 @@ import React, { useRef, useState } from "react";
     const onChange = e => setForm({...form,[e.target.name]:e.target.value});
     const onSubmit = e => {
       e.preventDefault(); setLoading(true);
-      emailjs.send(SVC,TMPL,{from_name:form.name,to_name:"Logan Night",from_email:form.email,to_email:"your-email@example.com",message:form.message},KEY)
+      emailjs.send(SVC,TMPL,{from_name:form.name,to_name:"Logan Night",from_email:form.email,to_email:"logan07night@gmail.com",message:form.message},KEY)
         .then(()=>{setLoading(false);setStatus("Thanks! I'll get back to you.");setForm({name:"",email:"",message:""});})
         .catch(()=>{setLoading(false);setStatus("Something went wrong — please try again.");});
     };
