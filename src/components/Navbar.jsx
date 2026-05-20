@@ -16,7 +16,7 @@ import React, { useEffect, useState } from 'react';
               LOGAN&nbsp;<span className="sm:block hidden">NIGHT</span>
             </p>
           </Link>
-          <ul className="list-none hidden sm:flex flex-row gap-6">
+          <ul className="list-none hidden sm:flex flex-row gap-6 items-center">
             {navLinks.map(l => (
               <li key={l.id} onClick={() => setActive(l.title)}
                 className={`${active===l.title?'text-white':'text-secondary'} hover:text-white text-[18px] font-medium cursor-pointer`}>
