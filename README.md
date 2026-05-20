@@ -1,87 +1,126 @@
 # Logan Night — Portfolio
 
-  Personal portfolio website for Logan Night (`flyboy-byte`), showcasing expertise in automotive diagnostics, embedded systems, Linux, and amateur radio.
+Personal portfolio website for Logan Night (`flyboy-byte`), showcasing expertise in automotive diagnostics, embedded systems, Linux, and amateur radio.
 
-  > [!NOTE]
-  > **Status**: Ready to deploy. Trigger the GitHub Actions workflow to go live at `flyboy-byte.github.io/portfolio`.
+> [!NOTE]
+> **Status**: Live at [flyboy-byte.github.io/portfolio](https://flyboy-byte.github.io/portfolio)
 
-  ---
+---
 
-  ## 🤖 AI / Vibe Coding Context
-  *This section is for AI assistants and vibe-coding platforms to quickly understand the project state.*
+## 🤖 AI / Vibe Coding Context
 
-  - **Goal**: A high-end, 3D interactive portfolio that highlights technical maker skills.
-  - **Key Files**:
-    - `src/constants/index.js`: The "source of truth" for all content.
-    - `src/assets/index.js`: Maps icon/asset names to external URLs.
-    - `src/components/canvas/`: Contains all Three.js logic.
-  - **Current State**:
-    - All source files pushed and content is Logan's.
-    - EmailJS is fully configured — service, template, and public key are live.
-    - Resume button in Navbar points to `/portfolio/Resume.pdf` — Logan will upload `Resume.pdf` to `public/`.
-    - GitHub Actions deploy workflow is in `.github/workflows/deploy.yml` — triggers on push to `main`.
-    - Architecture overview available in [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
-    - All external assets linked via HTTPS (Iconify CDN for icons, raw GitHub URLs for 3D models).
+- **Goal**: High-end 3D interactive portfolio highlighting maker skills.
+- **Key Files**:
+  - `src/constants/index.js`: Content source of truth.
+  - `src/assets/index.js`: Icon/asset CDN URLs.
+  - `src/components/canvas/`: Three.js logic.
+- **Current State**:
+  - All content adapted for Logan's profile.
+  - EmailJS fully configured (`service_vsyd175` / `template_31v002c`).
+  - `Resume.pdf` uploaded to `public/` (served at `/portfolio/Resume.pdf`).
+  - GitHub Pages serves from `main` branch root.
+  - All external assets via CDN.
 
-  ---
+---
 
-  ## 🚀 Tech Stack
+## 🚀 Tech Stack
 
-  - **Framework**: React 18 + Vite
-  - **Styling**: Tailwind CSS + Framer Motion
-  - **3D Engine**: Three.js (@react-three/fiber + @react-three/drei)
-  - **Icons**: Iconify (dynamic SVG loading via CDN)
-  - **Contact**: EmailJS (configured for `logan07night@gmail.com`)
+- **Framework**: React 18 + Vite
+- **Styling**: Tailwind CSS + Framer Motion
+- **3D Engine**: Three.js (@react-three/fiber + @react-three/drei)
+- **Icons**: Iconify (dynamic SVG loading via CDN)
+- **Contact**: EmailJS (`logan07night@gmail.com`)
 
-  ## 🛠️ Key Features
+## 🛠️ Key Features
 
-  - **3D Hero**: Interactive desktop PC model with custom lighting and typewriter effects cycling through Logan's skills.
-  - **Maker-Centric Content**: Custom sections for GM ASEP training, ASE certifications (A4/A5/A6), and Extra Class ham radio.
-  - **Project Cards**: Dynamic previews for `foss-radar` and `drag-tree` using GitHub OpenGraph cards.
-  - **Interactive Tech Stack**: 3D "Tech Balls" for Linux, Git, Arduino, Python, TypeScript, React, Three.js, Bash.
-  - **Contact Form**: Wired to EmailJS — sends directly to `logan07night@gmail.com`.
+- **3D Hero**: Interactive desktop PC model with typewriter skill cycling.
+- **Maker-Centric**: GM ASEP, ASE A4/A5/A6, Extra Class ham radio.
+- **Project Cards**: `foss-radar` and `drag-tree` with GitHub OpenGraph previews.
+- **Tech Stack Balls**: Linux, Git, Arduino, Python, TypeScript, React, Three.js, Bash.
+- **Contact Form**: Live EmailJS integration.
 
-  ## 📦 Project Structure
+## 📦 Project Structure
 
-  See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for a detailed breakdown of the component hierarchy and design patterns.
+See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for component hierarchy.
 
-  ## 🛠️ Local Development
+## 🛠️ Local Development
 
-  1. **Clone & Install**:
-     ```bash
-     git clone https://github.com/flyboy-byte/portfolio.git
-     cd portfolio
-     npm install
-     ```
-  2. **Run Dev**:
-     ```bash
-     npm run dev
-     ```
+```bash
+git clone https://github.com/flyboy-byte/portfolio.git
+cd portfolio
+npm install
+npm run dev
+```
 
-  ## 🌐 Deploy
+## 🌐 Deploy
 
-  Push to `main` — GitHub Actions builds and deploys to the `gh-pages` branch automatically.
-  Enable GitHub Pages under **Settings → Pages → Source: gh-pages branch** on first run.
+This repo uses GitHub Pages with the `main` branch root as the source.
 
-  Live URL: **https://flyboy-byte.github.io/portfolio**
+**Important**: The `main` root must contain the **built output**, not raw source.
 
-  ## 📝 Status
+### Option 1 — GitHub Actions (Recommended)
 
-  - [x] Base React + Vite app configured with `base: "/portfolio/"`
-  - [x] Content adapted for Logan's profile (bio, credentials, projects)
-  - [x] Architecture documentation added
-  - [x] EmailJS fully configured (`service_vsyd175` / `template_31v002c`)
-  - [x] Contact sends to `logan07night@gmail.com`
-  - [x] GitHub Actions deploy workflow ready
-  - [ ] Upload `Resume.pdf` to `public/` (Logan doing this manually)
-  - [ ] Run first deploy / enable GitHub Pages
+1. Add this workflow to `.github/workflows/pages.yml`:
 
-  ---
+```yaml
+name: Build and Deploy
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to main root
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Remove old build files
+          git remove --cached -r -f assets index.html 2>/dev/null || true
+          # Copy new build from dist/
+          cp -r dist/* .
+          # Stage everything
+          git add -A
+          git commit -m "deploy: build output" || exit 0
+          git push origin main
+```
 
-  ## 📜 Credits & References
+2. Go to **Settings → Actions → General → Workflow permissions → Read and write permissions → Save**.
+3. Next push auto-builds and deploys.
 
-  - **Base Template**: [lohitkolluri/Portfolio-Website](https://github.com/lohitkolluri/Portfolio-Website) — Used as the initial structural foundation.
-  - **Design Inspiration**: Adapted to focus on automotive diagnostics, maker projects, and ham radio.
+### Option 2 — Manual Build
 
-  ---
-  *Built with React, Three.js, and Framer Motion.*
+```bash
+npm run build
+cp -r dist/* .
+git add -A
+git commit -m "deploy: manual build"
+git push origin main
+```
+
+> **Tip**: Switching to `main /docs` is cleaner — keeps build artifacts out of root. Change in **Settings → Pages → Source → /docs folder**.
+
+## 📝 Status
+
+- [x] React + Vite with `base: "/portfolio/"`
+- [x] Logan's content throughout
+- [x] EmailJS live
+- [x] Resume.pdf uploaded
+- [x] GitHub Pages configured
+- [ ] Build output committed to `main` root (do once, then Actions handles it)
+
+## 📜 Credits
+
+- **Base Template**: [lohitkolluri/Portfolio-Website](https://github.com/lohitkolluri/Portfolio-Website)
+
+---
+*Built with React, Three.js, and Framer Motion.*
