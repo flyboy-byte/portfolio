@@ -113,7 +113,7 @@ const BallCanvas = ({ icon }) => (
     frameloop="always"
     dpr={[1, 2]}
     gl={{ preserveDrawingBuffer: true }}
-    camera={{ position: [20, 3, 5], fov: 25 }}
+    camera={{ position: [0, 0, 20], fov: 25 }}
     style={{ touchAction: "none" }}
   >
     <Suspense fallback={<CanvasLoader />}>
