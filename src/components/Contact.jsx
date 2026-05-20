@@ -5,8 +5,7 @@ import React, { useRef, useState } from "react";
   import { EarthCanvas } from "./canvas";
   import { SectionWrapper } from "../hoc";
   import { slideIn } from "../utils/motion";
-  // TODO: Replace with your own EmailJS credentials → https://emailjs.com
-  const SVC="service_vsyd175", TMPL="template_31v002c", KEY="zIP85NMwB3QCVNrho";
+    const SVC="service_vsyd175", TMPL="template_31v002c", KEY="zIP85NMwB3QCVNrho";
   const Contact = () => {
     const formRef = useRef();
     const [form, setForm] = useState({ name:"", email:"", message:"" });
