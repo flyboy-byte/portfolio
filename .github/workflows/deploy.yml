@@ -32,7 +32,9 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build
+        run: |
+          cp index.src.html index.html
+          npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
