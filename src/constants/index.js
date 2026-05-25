@@ -64,3 +64,11 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
       source_code_link: "https://github.com/flyboy-byte/drag-tree",
     },
   ];
+export const papers = [
+  {
+    title: "Example Whitepaper Title",
+    description: "A brief description of what this document covers and why it matters.",
+    tags: ["Diagnostics", "Automotive", "Reference"],
+    link: "https://example.com/your-paper.pdf",
+  },
+];
