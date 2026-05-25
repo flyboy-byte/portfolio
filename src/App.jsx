@@ -1,6 +1,7 @@
-import React from react;
-import { BrowserRouter } from react-router-dom;
-import { About, Contact, Experience, Hero, Navbar, Papers, StarsCanvas, Tech, Works } from ./components;
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import { About, Contact, Experience, Hero, Navbar, Papers, StarsCanvas, Tech, Works } from "./components";
+
 const App = () => (
   <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
     <div className="relative z-0 bg-primary">
@@ -12,4 +13,5 @@ const App = () => (
     </div>
   </BrowserRouter>
 );
+
 export default App;
