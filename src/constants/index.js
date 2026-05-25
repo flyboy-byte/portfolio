@@ -66,9 +66,27 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
   ];
 export const papers = [
   {
-    title: "Example Whitepaper Title",
-    description: "A brief description of what this document covers and why it matters.",
-    tags: ["Diagnostics", "Automotive", "Reference"],
-    link: "https://example.com/your-paper.pdf",
+    title: 'Evaluating Common AI APIs and Models',
+    description: 'Comparative analysis of frontier and value-tier LLMs — pricing, benchmark scores, latency, and a practical three-lane stack recommendation for a student/technical workflow.',
+    tags: ['AI', 'LLMs', 'APIs', 'Reference'],
+    link: 'https://flyboy-byte.github.io/portfolio/papers/ai-apis-report.pdf',
+  },
+  {
+    title: 'Vendor-Kernel Preservation in Qualcomm-Based SBCs',
+    description: 'Technical guide to replacing the userspace on the Arduino UNO Q while keeping the BSP kernel, bootloader, firmware blobs, and device tree intact.',
+    tags: ['Embedded', 'Linux', 'Qualcomm', 'SBC'],
+    link: 'https://flyboy-byte.github.io/portfolio/papers/qualcomm-kernel.html',
+  },
+  {
+    title: 'Phasing, Math, and Signals — Ham Extra Learner Manual',
+    description: 'Connects trigonometry, complex numbers, and Fourier theory to real RF behavior. Built for Ham Extra exam prep and practical antenna and modulation intuition.',
+    tags: ['Ham Radio', 'RF', 'Math', 'Extra Class'],
+    link: 'https://flyboy-byte.github.io/portfolio/papers/ham-radio-math.pdf',
+  },
+  {
+    title: 'T1D Field Management and Insulin Pen Survival Guide v2',
+    description: 'Evidence-grounded field guide for Type 1 Diabetes management in austere or off-grid conditions — storage limits, monitoring protocols, and evacuation triggers.',
+    tags: ['Medical', 'Field Guide', 'T1D', 'Wilderness'],
+    link: 'https://flyboy-byte.github.io/portfolio/papers/t1d-field-guide.pdf',
   },
 ];
