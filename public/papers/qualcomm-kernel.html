@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>White Paper</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; font-size: 15.5px; line-height: 1.85; color: #111; max-width: 800px; margin: 3rem auto; padding: 0 2rem; background: #fff; }
+  h1 { font-family: -apple-system, Arial, sans-serif; font-size: 28px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.35rem; }
+  .subtitle { font-family: -apple-system, Arial, sans-serif; font-size: 15px; color: #666; margin-bottom: 1.2rem; }
+  .meta { font-family: -apple-system, Arial, sans-serif; font-size: 12.5px; color: #999; border-bottom: 0.5px solid #e0ddd6; padding-bottom: 0.8rem; margin-bottom: 2rem; }
+  .toc { background: #f7f6f2; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 2rem; font-family: -apple-system, Arial, sans-serif; }
+  .toc-title { font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #999; margin-bottom: 0.5rem; }
+  .toc ol { padding-left: 1.2rem; font-size: 13.5px; color: #555; line-height: 1.9; }
+  h2 { font-family: -apple-system, Arial, sans-serif; font-size: 20px; font-weight: 500; margin: 2.5rem 0 0.6rem; padding-top: 1.5rem; border-top: 0.5px solid #e0ddd6; }
+  h3 { font-family: -apple-system, Arial, sans-serif; font-size: 16px; font-weight: 500; margin: 1.8rem 0 0.4rem; }
+  h4 { font-family: -apple-system, Arial, sans-serif; font-size: 14px; font-weight: 600; margin: 1.2rem 0 0.3rem; }
+  p { margin-bottom: 1rem; }
+  ul, ol { padding-left: 1.6rem; margin-bottom: 1rem; }
+  li { margin-bottom: 0.3rem; }
+  blockquote { border-left: 3px solid #d0cdc6; padding: 0.2rem 0 0.2rem 1rem; color: #666; margin: 1.2rem 0; font-style: italic; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; font-family: -apple-system, Arial, sans-serif; margin-bottom: 1.2rem; }
+  th { text-align: left; padding: 8px 12px; border-bottom: 1px solid #ccc; font-weight: 500; }
+  td { padding: 7px 12px; border-bottom: 0.5px solid #e8e6e0; }
+  code { font-family: Menlo, monospace; font-size: 13px; background: #f0efe9; padding: 2px 5px; border-radius: 4px; }
+  pre { background: #f0efe9; padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1.2rem; }
+  pre code { background: none; padding: 0; }
+  @media print { body { margin: 0; } }
+</style>
+</head>
+<body>
+<h1>Vendor-Kernel Preservation in Qualcomm-Based SBCs</h1>
+<p class="subtitle">A technical guide to replacing the userspace on the Arduino UNO Q while preserving the Qualcomm BSP kernel, bootloader, firmware, and device tree.</p>
+<p class="meta">Prepared: May 24, 2026 &nbsp;·&nbsp; Source: Deep Research</p>
+
+<div class="toc">
+  <p class="toc-title">Contents</p>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#bsp-kernel">Qualcomm BSP Kernel Structure</a></li>
+    <li><a href="#bootchain">Bootchain and Bootloader</a></li>
+    <li><a href="#device-tree">Device Tree (DTB/DTBO)</a></li>
+    <li><a href="#firmware">Firmware and Binary Blobs</a></li>
+    <li><a href="#kernel-abi">Kernel ABI and Modules</a></li>
+    <li><a href="#initramfs">Initramfs/Userspace Integration</a></li>
+    <li><a href="#fw-bl-interactions">Firmware and Bootloader Interactions</a></li>
+    <li><a href="#pitfalls">Pitfalls and Compatibility Issues</a></li>
+    <li><a href="#maintenance">Maintenance and Long-Term Viability</a></li>
+    <li><a href="#analogous">Analogous Cases</a></li>
+    <li><a href="#summary">Summary and Strategy</a></li>
+  </ol>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>The Arduino UNO Q (codename "Imola") uses a Qualcomm Dragonwing QRB2210 (QCM2290-based) SoC with a Qualcomm-supplied Debian 13 rootfs. To replace the userspace while keeping the Qualcomm BSP kernel intact, one must treat the existing kernel, bootloader, firmware, and DT entries as the "fixed platform" and port a new rootfs to it. In practice this means not building a new kernel or touching signed bootloader code at first, but rather adapting the OS image to the proprietary kernel's expectations and preserving its drivers and blobs. This approach is analogous to how Android ports (via Project Treble) isolate the vendor layer from the system layer: the goal is to insert a new OS layer (e.g. Arch Linux ARM or Buildroot) on top of the existing kernel and firmware.</p>
+
+<h2 id="bsp-kernel">Qualcomm BSP Kernel Structure</h2>
+<p>Qualcomm BSP kernels (the "downstream" kernel) are usually supplied via CodeAurora (CAF) in per-SoC branches and often differ substantially from mainline Linux. Vendors fork the Android/Linux common kernel and apply SoC-specific patches in CAF repositories (e.g. kernel/msm-4.14). Each SoC/generation has its own tree and tag (often named like "LA.UM.x.y…"). Historically this meant millions of lines of Qualcomm-specific changes for each chip, and only minimal merging upstream. In recent years Qualcomm has moved to LTS kernels (e.g. 6.6.x) with fewer out-of-tree changes, but heavy SoC code remains.</p>
+<p>For bring-up work, Linaro advises starting from Linus's mainline tree and adding Qualcomm's public trees (the "Qualcomm community upstream" tree on kernel.org or Linaro's integration branch) as git remotes. This lets developers compare a vendor kernel's config and patches against upstream. (For UNO Q, the stock kernel is Linux 6.16.7 for ARM64.)</p>
+
+<h2 id="bootchain">Bootchain and Bootloader</h2>
+<p>Qualcomm devices typically use a signed boot chain. A BL‑s (Primary Boot Loader in ROM) loads a signed Secondary Boot Loader (SBL or XBL), which then loads an Android-style boot image or UEFI payload. U-Boot was not originally common on snapdragon boards, but Linaro recently released an upstream U-Boot with EFI support. On the UNO Q, the Arduino team provides a custom U-Boot (see arduino/u-boot qcom-mainline on GitHub), since neither mainline U-Boot nor Linaro's QCOM fork would boot the board.</p>
+<p>In general, replacing the bootloader is tricky: Qualcomm SoCs usually refuse unsigned bootloaders and often require signing or chainloading. As one observer notes, "Snapdragon… only accept bootloaders signed with a key hardcoded in the SoC, so you cannot just ship a free U-Boot." The workaround is to keep the stock Android bootloader (ABL/XBL) and chainload the new bootloader or kernel from it, as Linaro's U-Boot guide describes.</p>
+<p>In practice, a preservation strategy often keeps the existing boot partition(s) untouched. For example, Linaro's instructions for SDM845 specify creating an Android boot.img by concatenating the kernel and DTB and then using mkbootimg, then flashing it via fastboot. They also warn about eMMC partition tables: one must not erase or re-create the base partition table on eMMC when flashing a new rootfs. Instead, only add/modify the rootfs (and EFI) partitions. (On UNO Q this likely means preserving the vendor "boot" and "vendor_boot" partitions and only changing the Linux root partition.) Notably, modern Snapdragon boards sometimes include a dtbo partition: Linaro points out that the bootloader will overlay this on the base DTB unless it's wiped. The fix is to fastboot flash dtbo_a zero.bin (and same for dtbo_b) before booting a custom kernel.</p>
+
+<h2 id="device-tree">Device Tree (DTB/DTBO)</h2>
+<p>Most Linux on ARM64 uses a single DTB blob passed to the kernel, but Qualcomm's tooling often blends multiple DTBs. For example, Android Treble introduced a model where the bootloader merges a "base" DTB (SoC-level) with a DTB overlay (dtbo) for board-specific details. In the Pixel3 mainlining effort, the developer found that Google's intention was exactly that: the kernel DTB contains only SoC info while board info lives in dtbo. Since mainline Linux normally expects one unified DTB, that effort solved it by flashing an empty dtbo and putting all needed info into the kernel DTB.</p>
+<p>In practice, for UNO Q one should extract the stock DTB(s) from the vendor image (they may reside in the boot or vendor_boot image) and reuse them. Note Qualcomm has experimented with richer DT identification (e.g. adding qcom,msm-id, qcom,board-id, etc. in the DT). These fields allow one software package to carry many DTBs for different board SKUs. However, the community rejected embedding QCOM-specific IDs in the DT because the kernel itself doesn't consume them. The practical upshot is that you may see multiple DTB files in the image; the bootloader must pick the right one (or you must choose the correct DTB at build time).</p>
+
+<h2 id="firmware">Firmware and Binary Blobs</h2>
+<p>Even with a working DTB and kernel, many hardware blocks require firmware blobs. Qualcomm drivers are open-source in the kernel, but they expect proprietary firmware in /lib/firmware (or vendor partitions). Examples include Wi-Fi/NPU/VPU firmware, Adreno GPU microcode, Hexagon DSP binaries, etc. If the vendor rootfs is discarded, all those blobs must be preserved or re-downloaded. (For instance, Linaro's debian-flasher image includes a prog_firehose_ddr.elf and other boot binaries, and those would be needed to do USB flashing via EDL/QDL.) Some firmware files have been upstreamed; for example, Adreno GPU firmware for Snapdragon X2 was recently added to linux-firmware to enable the open-source DRM driver. But typically one must copy the exact firmware versions from the vendor.</p>
+<p>In a new rootfs, ensure /lib/firmware includes all Qualcomm blobs (and any device-specific firmware) used by the stock kernel. Without them, the corresponding hardware (e.g. GPU or camera, if any) will not work. Indeed, even the Qualcomm robotics RB5 FAQs note that missing firmware can leave parts of the system "dead unless the chipset vendor provides a binary object."</p>
+
+<h2 id="kernel-abi">Kernel ABI and Modules</h2>
+<p>Linux does not have a stable in-kernel ABI. Any loadable module must be compiled for the exact running kernel version and config. This means a precompiled distribution's modules (e.g. from an Arch package) will not load on Qualcomm's custom kernel. If the rootfs replacement needs additional kernel modules (e.g. out-of-tree drivers), one would have to rebuild them against the vendor kernel source and its config. In a pure preserve-kernel strategy, one typically avoids adding new modules and instead relies on the drivers already built into the vendor kernel. (If in the future you rebuild the kernel or move to a mainline kernel, you'd then need a different plan for module compatibility or DKMS builds.)</p>
+
+<h2 id="initramfs">Initramfs/Userspace Integration</h2>
+<p>The question emphasizes interoperability, not immediately upstreaming. One typical approach is to build a minimal initramfs or use a distribution's initramfs to pivot to a rootfs on eMMC. Linaro's example used an initramfs "cpio" whose kernel prints console logs and then mounts the actual root. You could similarly use an Arch/Ubuntu initramfs. The initramfs (or initrd) must include any essential userspace helpers needed to find and mount the rootfs (e.g. sdparm, mount, etc.), as well as the kernel modules (though for a preserve-kernel setup, modules are part of rootfs rather than initrd).</p>
+<p>In principle, if the vendor expects a certain init script or fstab, the new rootfs should adapt to that. For example, if the bootloader's boot image passes a root= command line, ensure the initramfs honors it. If the stock uses a special init (like Android's init), the new root may need its own init (systemd or busybox).</p>
+
+<h2 id="fw-bl-interactions">Firmware and Bootloader Interactions</h2>
+<p>Vendor bootloaders may assume certain partitions exist (boot, vendor_boot, dtbo, etc.). In the Qualcomm context, "vendor_boot" can hold a ramdisk and DTB(s) used for vendor-specific init (Android 11+ devices). Since Arduino's UNO Q is Linux (not Android per se), it likely uses a simpler boot scheme, but it may still reserve partitions for secondary firmware (e.g. an MCU, radio, or TrustZone). The Buildroot port notes that a special "prog_firehose_ddr.elf" (Qualcomm download protocol) is needed to program the board. One should capture such bootloader-related binaries from the stock image (the Arduino 13-in-1 flasher or Linaro rescue image contains them) and keep them safe. The new rootfs should not overwrite or break the existing A/B slot scheme if any, and should respect the same partition numbering.</p>
+
+<h2 id="pitfalls">Pitfalls and Compatibility Issues</h2>
+<p>Simply booting with the vendor kernel is only step one. Many common issues arise: missing or incompatible firmware, HAL interface mismatches, driver differences, etc. Experience from other ports shows that basic hardware (CPU cores, memory, console, USB, SD) often works with a compatible kernel/DTB. But complex subsystems (GPU acceleration, camera, audio DSP, neural engines, cellular modems, etc.) frequently fail to work without vendor support. As one forum summary notes for embedded devices: if no driver exists for a peripheral, "that part of the board is dead unless the chipset vendor provides a binary object."</p>
+<p>In Android-to-Linux ports, it's common to see Wi-Fi and display first, but camera and GPU last. For example, the Pixel 3 (Snapdragon 845) mainline effort achieved USB networking but the display and audio needed additional work, and camera still "is still work in progress." Likewise, PinePhone users have found Snapdragon-based phones must chainload boot and rely on Android firmware to use modems or DSPs.</p>
+
+<h2 id="maintenance">Maintenance and Long-Term Viability</h2>
+<p>Sticking with the vendor kernel makes short-term porting easier but binds you to Qualcomm's support cycle. Qualcomm typically stops releasing kernel updates for an SoC once it's out of mainstream products. OEMs then either maintain the code themselves or abandon it. Thus a vendor-kernel preserve project risks stagnation: you can update userspace, but kernel bugs or security issues must be backported manually. In contrast, migrating to mainline (or at least newer LTS) would pay off in the long term, but requires heavy investment.</p>
+<p>In practice, many community ports deliberately delay moving the kernel. They capture as much information as possible up-front (stock kernel image, DTS, firmware blobs, bootloader binaries) so that future mainlining is possible. For instance, the Pixel 3 guide emphasizes capturing the downstream DT &amp; regulator settings before tweaking anything. Similarly, one should save the Arduino Debian image's kernel and modules. Tools like dtc or Android's unmkbootimg can extract kernel/dtb.</p>
+
+<h2 id="analogous">Analogous Cases</h2>
+<p>This pattern of "new rootfs on old kernel" is common. Android custom ROM projects do exactly this: they keep Qualcomm's (or another vendor's) kernel and blobs, and swap out system images. They rely on the Vendor vs System partition separation (QSSI vs vendor HALs) to avoid redoing the kernel. Likewise, OpenWrt often ports new firmware to old routers by reusing the vendor bootloader and BSP configuration, only adding or reusing existing Linux drivers. The PostmarketOS project on phones frequently starts with a vendor kernel and hal layer, then incrementally replaces pieces (this is what "Halium" does). In each case, the limitations are similar: many features remain inaccessible until one of (a) generic drivers and firmware are upstreamed, or (b) a vendor kernel is used.</p>
+
+<h2 id="summary">Summary and Strategy</h2>
+<p>In summary, a viable approach is:</p>
+<ol>
+  <li><p><strong>Inventory vendor artifacts first:</strong> extract the stock kernel image, DTBs (and DTBO overlay), firmware blobs, and bootloader binaries from the Arduino Debian image. Keep these pristine.</p></li>
+  <li><p><strong>Port userland carefully:</strong> build a new rootfs (e.g. ArchARM or Buildroot) using the same architecture. Ensure it contains the vendor firmware files and any needed userspace helpers. Use or create an initramfs that will mount the new root.</p></li>
+  <li><p><strong>Adapt boot image:</strong> construct a kernel boot image as required (EFI or Android boot format). At minimum, append the correct DTB to the kernel and package any initramfs (see Linaro's mkbootimg example). Do not reflash the base bootloader. Flash only the rootfs and relevant kernel partitions.</p></li>
+  <li><p><strong>Test incrementally:</strong> first confirm the board boots and shows a console on the new root. Then check basic peripherals (USB, SD, networking). Only then try graphics/audio/etc. Watch dmesg for missing firmware or dev nodes. Keep any stock log or console handy for debugging.</p></li>
+  <li><p><strong>Expect breakage:</strong> Plan that some subsystems will never fully work without vendor support. For example, GPU and camera may remain off-limits, as was seen even in Snapdragon 845 mainlining. On the other hand, Linux drivers for Wi-Fi, Ethernet, and general-purpose I/O often work once the firmware is installed.</p></li>
+  <li><p><strong>Document all changes:</strong> Note every tweak (e.g. special DT overlays disabled, custom kernel args, etc.) and any remaining proprietary binaries in use. This ensures the process is reproducible and that future efforts can pick up where you left off.</p></li>
+</ol>
+<p>By preserving the Qualcomm BSP kernel and focusing on rootfs interop, one gains a head start: you retain all existing hardware support in that kernel. It trades the ultimate goal of mainline purity for a shorter path to a usable system. Key success is defined by a booting, multi-service Linux on the new rootfs; full hardware integration may not be realistic immediately. However, capturing the vendor kernel's interface and data at the start makes it feasible to later upstream more bits (as the Pixel 3 effort shows) while keeping the system running.</p>
+
+<h2 id="sources">Sources</h2>
+<p>Embedded Linux porting guides and community reports, including Linaro's Qualcomm boot/kernel documentation, Qualcomm developer blogs on device trees, Android/mainlining conference slides, and forum/wiki posts on BSP ports. These emphasize how Qualcomm's vendor kernels and drivers are structured, and what challenges arise when swapping userspaces on ARM64 devices.</p>
+</body>
+</html>
