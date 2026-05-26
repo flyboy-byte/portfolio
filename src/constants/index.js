@@ -89,4 +89,10 @@ export const papers = [
     tags: ['Medical', 'Field Guide', 'T1D', 'Wilderness'],
     link: 'https://flyboy-byte.github.io/portfolio/papers/t1d-field-guide.pdf',
   },
+  {
+    title: 'Pure Arch on an Older Dell Latitude',
+    description: 'A real BIOS/MBR LUKS install progression on a Dell Latitude E5540 — capturing failed paths, ext4 tooling pitfalls, GRUB/LUKS config, and the final clean architecture.',
+    tags: ['Linux', 'Arch', 'Security', 'Systems'],
+    link: 'https://flyboy-byte.github.io/portfolio/papers/arch-dell-latitude.html',
+  },
 ];
