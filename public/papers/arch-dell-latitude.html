@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>White Paper</title>
+<style>
+body{font-family:Georgia,serif;font-size:15.5px;line-height:1.85;color:#111;max-width:800px;margin:3rem auto;padding:0 2rem;background:#fff}
+h1{font-family:-apple-system,Arial,sans-serif;font-size:26px;font-weight:500;letter-spacing:-.02em;margin-bottom:.3rem}
+.subtitle{font-family:-apple-system,Arial,sans-serif;font-size:15px;color:#666;margin-bottom:1rem}
+.meta{font-family:-apple-system,Arial,sans-serif;font-size:12px;color:#999;border-bottom:.5px solid #e0ddd6;padding-bottom:.8rem;margin-bottom:1.8rem}
+.toc{background:#f7f6f2;border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.8rem;font-family:-apple-system,Arial,sans-serif}
+.toc-title{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#999;margin-bottom:.5rem}
+.toc ol{padding-left:1.2rem;font-size:13px;color:#555;line-height:1.9}
+h2{font-family:-apple-system,Arial,sans-serif;font-size:19px;font-weight:500;margin:2.2rem 0 .5rem;padding-top:1.2rem;border-top:.5px solid #e0ddd6}
+h3{font-family:-apple-system,Arial,sans-serif;font-size:16px;font-weight:500;margin:1.6rem 0 .35rem}
+h4{font-family:-apple-system,Arial,sans-serif;font-size:14px;font-weight:600;margin:1.1rem 0 .25rem}
+p{margin-bottom:.9rem}ul,ol{padding-left:1.5rem;margin-bottom:.9rem}li{margin-bottom:.25rem}
+blockquote{border-left:3px solid #d0cdc6;padding:.2rem 0 .2rem 1rem;color:#666;margin:1.1rem 0;font-style:italic}
+table{width:100%;border-collapse:collapse;font-size:13px;font-family:-apple-system,Arial,sans-serif;margin-bottom:1.1rem}
+th{text-align:left;padding:7px 10px;border-bottom:1px solid #ccc;font-weight:500}
+td{padding:6px 10px;border-bottom:.5px solid #e8e6e0}
+code{font-family:Menlo,monospace;font-size:13px;background:#f0efe9;padding:2px 5px;border-radius:4px}
+pre{background:#f0efe9;padding:1rem;border-radius:8px;overflow-x:auto;margin-bottom:1.1rem}
+pre code{background:none;padding:0}strong{font-weight:600}
+@media print{body{margin:0}}
+</style></head><body><h1>Pure Arch on an Older Dell Latitude: A Practical Reconstruction of a BIOS/MBR LUKS Install</h1>
+<p class="subtitle">A real install progression capturing technical reasoning, failed paths, corrections, and final architecture for an encrypted Arch Linux system on a Dell Latitude E5540.</p>
+<p class="meta">Prepared: May 25, 2026 &nbsp;·&nbsp; Source: Deep Research</p>
+
+<div class="toc">
+<p class="toc-title">Contents</p>
+<ol>
+  <li>Global Intent</li>
+  <li>Abstract</li>
+  <li>Starting Condition: The Laptop Was Not Using UEFI</li>
+  <li>First Plan: Dual Boot Beside EndeavourOS</li>
+  <li>Mint Live Environment Problem: Old e2fsprogs Versus Newer ext4 Features</li>
+  <li>The Resize Path Became Untrustworthy</li>
+  <li>Wiping the Disk: What wipefs Does and Does Not Do</li>
+  <li>Final Partition Design: MBR, Unencrypted /boot, Encrypted Root</li>
+  <li>LUKS and Filesystem Setup</li>
+  <li>Pacstrap Package Intent</li>
+  <li>Fstab and Chroot</li>
+  <li>Initramfs: The encrypt Hook Is Mandatory</li>
+  <li>GRUB Configuration for BIOS/MBR with LUKS Root</li>
+  <li>System Basics</li>
+  <li>Desktop Decision: labwc Was Cleaner, LXQt Was Smarter for This Job</li>
+  <li>Networking Issue: Connected with iwctl but DNS Failed</li>
+  <li>User Account Issue: useradd logan Was Incomplete</li>
+  <li>Final System Model</li>
+  <li>Main Lessons</li>
+</ol>
+</div>
+
+<h2>Global Intent</h2>
+<p>This document captures a real Arch Linux install progression, not an idealized tutorial written after the fact by someone pretending every command worked the first time. The goal is to preserve the technical reasoning, failed paths, corrections, and final architecture so the install can be understood later as a reference.</p>
+<p>The machine was an older Dell Latitude E5540. The target evolved during the process. The first idea was to dual boot pure Arch beside an existing EndeavourOS install. That shifted after filesystem resize issues and GRUB confusion made the dual-boot path less worth preserving. The final goal became cleaner: wipe the whole disk, install pure Arch, use BIOS/MBR because that is how the machine was already booting, encrypt the root filesystem with LUKS, keep /boot unencrypted, and use LXQt instead of a more manual Wayland setup.</p>
+<p>The core principle was not "make the fanciest Arch install." The core principle was "make the layers match." Firmware mode, partition table, bootloader, encryption, initramfs, networking, desktop environment, and user permissions all had to line up. When they did not, the system failed in ways that looked random but were actually logical.</p>
+
+<h2>Abstract</h2>
+<p>This install started as a pure Arch dual-boot project on a Dell Latitude E5540 that already had EndeavourOS installed. The existing system had no EFI partition and appeared to be installed on a DOS/MBR partition table using legacy BIOS boot. The first plan was to shrink the EndeavourOS partition, create a new encrypted Arch partition, and let GRUB dual boot both systems.</p>
+<p>That plan ran into ext4 tooling and partition-resize problems. A Mint live environment had an older e2fsprogs version that could not understand newer ext4 features from the Arch-family install. Later, the EndeavourOS partition appeared to have a mismatch between filesystem superblock size and physical partition size, likely caused by incomplete or mismatched shrink operations. GRUB also became confused because the system had bootloader files in more than one place, and the encrypted Arch /boot path created early-decryption issues.</p>
+<p>The final resolution was to wipe /dev/sda, create a clean MBR layout, use a small unencrypted /boot partition, place the root filesystem inside a LUKS container, install GRUB for BIOS with i386-pc, and let the initramfs handle unlocking root. LXQt was chosen over labwc because the user wanted a complete lightweight desktop without manually assembling panels, applets, launchers, and session behavior.</p>
+<h3>Final Architecture</h3>
+<pre><code>/dev/sda
+├─ /dev/sda1    ext4          /boot       unencrypted
+└─ /dev/sda2    crypto_LUKS   cryptroot   encrypted root
+   └─ /dev/mapper/cryptroot   ext4        /</code></pre>
+<h3>Boot Flow</h3>
+<p>BIOS → MBR GRUB → unencrypted /boot → kernel/initramfs → LUKS prompt → encrypted root → Arch</p>
+
+<h2>1. Starting Condition: The Laptop Was Not Using UEFI</h2>
+<p>The first thing that mattered was not Arch. It was firmware mode.</p>
+<p>The Dell Latitude E5540 was already running EndeavourOS, but the disk layout looked odd at first: there was only one ext4 partition and no visible EFI partition. That raised the question: was this really UEFI, or was it legacy BIOS?</p>
+<p>The checks were simple:</p>
+<pre><code>ls /sys/firmware/efi</code></pre>
+<p>There was no EFI directory. Also, /boot had no efi folder. Then <code>fdisk -l</code> showed:</p>
+<pre><code>Disklabel type: dos</code></pre>
+<p><strong>Fact:</strong> <code>dos</code> here means an MBR partition table.</p>
+<p><strong>Conclusion:</strong> the machine was booting in legacy BIOS mode, not UEFI.</p>
+<p>That decision controlled the rest of the install. No EFI System Partition was needed. No systemd-boot. No UEFI boot entry management. GRUB would be installed to the disk itself:</p>
+<pre><code>grub-install --target=i386-pc /dev/sda</code></pre>
+<p>That command installs GRUB for BIOS/MBR boot. The target name <code>i386-pc</code> does not mean the installed OS is 32-bit. It is GRUB's BIOS platform target.</p>
+
+<h2>2. First Plan: Dual Boot Beside EndeavourOS</h2>
+<p>The original layout had EndeavourOS on /dev/sda1. The plan was to shrink that partition, create /dev/sda2, install Arch into it, and encrypt only the new Arch install.</p>
+<p>The intended layout was roughly:</p>
+<pre><code>/dev/sda1    EndeavourOS existing ext4
+/dev/sda2    LUKS container for Arch</code></pre>
+<p>This was technically possible. BIOS/MBR systems can dual boot just fine. GRUB in the MBR can present both systems. But the details got messy because the existing partition had to be resized, and resizing is not one action.</p>
+<p>The important distinction:</p>
+<ul>
+  <li><code>e2fsck</code> checks or repairs the filesystem.</li>
+  <li><code>resize2fs</code> changes the size of the ext4 filesystem.</li>
+  <li><code>parted</code>/<code>GParted</code> changes the partition boundary.</li>
+</ul>
+<p>A filesystem can be smaller than the partition. A partition can also be accidentally made smaller than the filesystem, which is where the goblin math starts.</p>
+<p>At one point, the filesystem had been shrunk or partially checked, but GParted still showed the whole partition. That made sense: <code>resize2fs</code> can shrink the ext4 filesystem inside the partition, but it does not change the partition table. The partition boundary still has to be moved separately with <code>parted resizepart</code> or GParted.</p>
+<p>The intended command relationship was:</p>
+<pre><code>e2fsck -f /dev/sda1
+resize2fs /dev/sda1 175G
+parted /dev/sda
+resizepart 1 175GB</code></pre>
+<p>The exact numbers changed during the process, but the principle was the same: shrink the filesystem first, then shrink the partition boundary.</p>
+
+<h2>3. Mint Live Environment Problem: Old e2fsprogs Versus Newer ext4 Features</h2>
+<p>The resize work was attempted from a Mint live boot. Mint saw errors when checking the EndeavourOS partition. Running <code>e2fsck</code> produced an unsupported feature message, including <code>FEATURE_C12</code>.</p>
+<p>The installed Mint e2fsprogs version was 1.46. That was too old for some newer ext4 features used by the Arch/Endeavour filesystem. This did not automatically prove the filesystem was broken. It proved the tool was too old to safely handle that filesystem.</p>
+<p>The important lesson: a live ISO is not automatically the right recovery environment. The age of userspace tools matters. Filesystems are not just "ext4 forever, same thing everywhere." Newer ext4 features can confuse older check/repair tools.</p>
+<p>The Arch ISO was the better tool because it shipped newer filesystem utilities.</p>
+
+<h2>4. The Resize Path Became Untrustworthy</h2>
+<p>After more resizing attempts, <code>e2fsck</code> eventually reported that the superblock size and physical size were different. That likely meant the ext4 filesystem and the partition table were no longer describing the same size.</p>
+<p>That was the point where the dual-boot plan stopped being worth it.</p>
+<p><strong>Working theory:</strong> the partition boundary and filesystem size got out of sync during the shrink attempts. This may have happened because one tool completed part of the operation while another failed or refused to continue.</p>
+<p><strong>Practical conclusion:</strong> stop trying to preserve the EndeavourOS install. Wipe the disk and rebuild cleanly.</p>
+<p>That was the right call. Not because dual boot was impossible, but because the existing partition had become a bad foundation.</p>
+
+<h2>5. Wiping the Disk: What wipefs Does and Does Not Do</h2>
+<p>The decision was made to fully clean /dev/sda.</p>
+<p>The command:</p>
+<pre><code>wipefs -a /dev/sda</code></pre>
+<p>This removes filesystem and partition signatures. It makes the disk appear blank to the OS.</p>
+<p>It does not securely erase every sector. Old data may remain recoverable until overwritten. For reinstalling, this is fine. For selling or disposing of a disk, it is not enough.</p>
+<p>Optional stronger first-sector cleanup:</p>
+<pre><code>dd if=/dev/zero of=/dev/sda bs=1M count=10 status=progress</code></pre>
+<p>That clears the beginning of the disk, including old bootloader and partition metadata. It is still not a full secure erase, but it helps avoid old signature weirdness.</p>
+
+<h2>6. Final Partition Design: MBR, Unencrypted /boot, Encrypted Root</h2>
+<p>The clean install used an MBR/DOS partition table because the laptop was already working in BIOS mode.</p>
+<p>Partitioning was done with:</p>
+<pre><code>cfdisk /dev/sda</code></pre>
+<p>Choose: <code>dos</code></p>
+<p>Final layout:</p>
+<pre><code>/dev/sda1    512M or similar    Linux filesystem    /boot
+/dev/sda2    rest of disk       Linux filesystem    LUKS root</code></pre>
+<p>For BIOS/MBR, neither partition strictly needs to be marked bootable for GRUB. GRUB installs to the MBR of /dev/sda. However, some older BIOS implementations expect at least one partition to have the bootable flag. Marking /dev/sda1 bootable is harmless and reasonable.</p>
+<p>So the practical choice was:</p>
+<ul>
+  <li>/dev/sda1 bootable</li>
+  <li>/dev/sda2 not bootable</li>
+</ul>
+<p>This layout is simple and robust. The separate unencrypted /boot avoids making GRUB decrypt the root volume before loading the kernel.</p>
+
+<h2>7. LUKS and Filesystem Setup</h2>
+<p>The encryption layer goes on /dev/sda2.</p>
+<p>Commands:</p>
+<pre><code>cryptsetup luksFormat /dev/sda2
+cryptsetup open /dev/sda2 cryptroot</code></pre>
+<p>After opening, the decrypted device appears as:</p>
+<pre><code>/dev/mapper/cryptroot</code></pre>
+<p>This mapper device is what gets formatted as the root filesystem:</p>
+<pre><code>mkfs.ext4 /dev/mapper/cryptroot</code></pre>
+<p>The boot partition is plain ext4:</p>
+<pre><code>mkfs.ext4 /dev/sda1</code></pre>
+<p>The order matters. Do not create LUKS on /dev/sda2 and then run <code>mkfs.ext4 /dev/sda2</code>. That would overwrite the LUKS container. The filesystem belongs inside the unlocked mapper.</p>
+<p>Mounting:</p>
+<pre><code>mount /dev/mapper/cryptroot /mnt
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot</code></pre>
+<p>At this point:</p>
+<ul>
+  <li>/mnt — future /</li>
+  <li>/mnt/boot — future /boot</li>
+</ul>
+<p>This creates the intended boot model:</p>
+<ul>
+  <li>GRUB can read /boot without decrypting root.</li>
+  <li>The initramfs handles decrypting root.</li>
+</ul>
+
+<h2>8. Pacstrap Package Intent</h2>
+<p>The base install was not meant to be ultra-minimal. The intent was a practical base system that could boot, connect to networks, build AUR packages, and later install LXQt.</p>
+<p>The package set discussed included:</p>
+<pre><code>pacstrap /mnt base base-devel linux linux-firmware \
+grub cryptsetup os-prober \
+nano vim zsh sudo \
+networkmanager iwd dhclient \
+sof-firmware linux-firmware-qlogic \
+git curl wget unzip zip tar htop man-db man-pages less</code></pre>
+<p>Purpose:</p>
+<ul>
+  <li><strong>base, linux, linux-firmware:</strong> core Arch system.</li>
+  <li><strong>base-devel:</strong> required for makepkg and AUR building.</li>
+  <li><strong>grub:</strong> BIOS bootloader.</li>
+  <li><strong>cryptsetup:</strong> LUKS support.</li>
+  <li><strong>nano, vim:</strong> editors.</li>
+  <li><strong>zsh:</strong> preferred shell.</li>
+  <li><strong>sudo:</strong> normal admin workflow.</li>
+  <li><strong>networkmanager, iwd, dhclient:</strong> network stack options.</li>
+  <li><strong>sof-firmware:</strong> audio firmware support on many laptops.</li>
+  <li><strong>linux-firmware-qlogic:</strong> extra firmware coverage useful on some hardware.</li>
+  <li><strong>git, curl, wget:</strong> package/build/recovery tools.</li>
+  <li><strong>man-db, man-pages, less:</strong> offline documentation.</li>
+  <li><strong>htop, unzip, zip, tar:</strong> basic system usability.</li>
+</ul>
+<p>Since this was a Dell Latitude E5540, the most likely hardware support came from the kernel and linux-firmware. Intel wireless is usually handled by iwlwifi, and Intel graphics by the kernel's DRM/i915 stack. sof-firmware was included because audio firmware issues are common enough on laptops that it is cheap insurance.</p>
+
+<h2>9. Fstab and Chroot</h2>
+<p>After installing packages:</p>
+<pre><code>genfstab -U /mnt >> /mnt/etc/fstab</code></pre>
+<p>Expected idea:</p>
+<pre><code>UUID=&lt;root-filesystem-uuid&gt;  /      ext4  rw,relatime  0 1
+UUID=&lt;boot-filesystem-uuid&gt;  /boot  ext4  rw,relatime  0 2</code></pre>
+<p>Then:</p>
+<pre><code>arch-chroot /mnt</code></pre>
+<p>From this point, commands affect the installed system rather than the live ISO.</p>
+
+<h2>10. Initramfs: The encrypt Hook Is Mandatory</h2>
+<p>The initramfs must know how to unlock the LUKS root device. This is controlled by <code>/etc/mkinitcpio.conf</code>.</p>
+<p>The hook line seen earlier contained modern Arch defaults:</p>
+<pre><code>HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block filesystems fsck)</code></pre>
+<p>For encrypted root, <code>encrypt</code> must be inserted after <code>block</code> and before <code>filesystems</code>.</p>
+<p>Correct concept:</p>
+<pre><code>HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block encrypt filesystems fsck)</code></pre>
+<p>The important rule:</p>
+<blockquote>block → encrypt → filesystems</blockquote>
+<p><code>block</code> detects block devices. <code>encrypt</code> opens the LUKS device. <code>filesystems</code> mounts the root filesystem after it exists.</p>
+<p>The keyboard-related hooks are also useful because the passphrase is entered early in boot.</p>
+<p>After editing:</p>
+<pre><code>mkinitcpio -P</code></pre>
+<p>Warnings about possibly missing firmware may appear. If image generation succeeds, those warnings are usually not fatal. They often mean optional firmware for hardware variants is not present.</p>
+
+<h2>11. GRUB Configuration for BIOS/MBR with LUKS Root</h2>
+<p>Because /boot is unencrypted, GRUB does not need <code>GRUB_ENABLE_CRYPTODISK=y</code>.</p>
+<p>This was a key correction from the earlier failed setup. When /boot was inside the encrypted root, GRUB tried to decrypt the LUKS container itself and produced passphrase prompts at the GRUB stage. That made troubleshooting messy. With separate /boot, GRUB should not decrypt anything. It should only load the kernel and initramfs.</p>
+<p>Find the LUKS UUID:</p>
+<pre><code>blkid /dev/sda2</code></pre>
+<p>Use the UUID from /dev/sda2, where <code>TYPE="crypto_LUKS"</code> appears. Do not use the UUID from /dev/mapper/cryptroot.</p>
+<p>Edit:</p>
+<pre><code>nano /etc/default/grub</code></pre>
+<p>Set:</p>
+<pre><code>GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet cryptdevice=UUID=&lt;sda2-luks-uuid&gt;:cryptroot root=/dev/mapper/cryptroot"</code></pre>
+<p>No dual boot means os-prober is not necessary. It can be installed, but it does not need to do anything.</p>
+<p>Install GRUB:</p>
+<pre><code>grub-install --target=i386-pc /dev/sda
+grub-mkconfig -o /boot/grub/grub.cfg</code></pre>
+<p>Expected result:</p>
+<pre><code>Installation finished. No error reported.
+Found linux image: /boot/vmlinuz-linux
+Found initrd image: /boot/initramfs-linux.img
+done</code></pre>
+<p>If GRUB asks for a LUKS password before the kernel loads, something is wrong for this layout. With unencrypted /boot, the LUKS prompt should come later from the initramfs.</p>
+
+<h2>12. System Basics</h2>
+<h3>Timezone</h3>
+<pre><code>ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
+hwclock --systohc</code></pre>
+<h3>Locale</h3>
+<pre><code>nano /etc/locale.gen</code></pre>
+<p>Uncomment:</p>
+<pre><code>en_US.UTF-8 UTF-8</code></pre>
+<p>Then:</p>
+<pre><code>locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf</code></pre>
+<h3>Hostname</h3>
+<pre><code>echo "logan" > /etc/hostname</code></pre>
+<h3>Hosts File</h3>
+<pre><code>nano /etc/hosts</code></pre>
+<p>Use:</p>
+<pre><code>127.0.0.1   localhost
+::1         localhost
+127.0.1.1   logan.localdomain logan</code></pre>
+<h3>Root Password</h3>
+<pre><code>passwd</code></pre>
+<h3>Networking</h3>
+<pre><code>systemctl enable NetworkManager</code></pre>
+<p>Optional if using iwd directly:</p>
+<pre><code>systemctl enable iwd</code></pre>
+<h3>Exit and Reboot</h3>
+<pre><code>exit
+umount -R /mnt
+cryptsetup close cryptroot
+reboot</code></pre>
+<p>Expected boot:</p>
+<ul>
+  <li>GRUB menu appears.</li>
+  <li>Kernel/initramfs loads.</li>
+  <li>Initramfs asks for LUKS passphrase.</li>
+  <li>Root unlocks as /dev/mapper/cryptroot.</li>
+  <li>Arch boots.</li>
+</ul>
+<p>That boot behavior confirms the layering is correct.</p>
+
+<h2>13. Desktop Decision: labwc Was Cleaner, LXQt Was Smarter for This Job</h2>
+<p>The original desktop idea was labwc. That made sense technically. labwc is a Wayland stacking compositor inspired by Openbox. Combined with Waybar, it can make a clean, lightweight desktop.</p>
+<p>The problem was not whether labwc was good. The problem was how much manual assembly it required.</p>
+<p>A labwc setup would likely need:</p>
+<ul>
+  <li>labwc for window management.</li>
+  <li>waybar for panel.</li>
+  <li>fuzzel, wmenu, wofi, or rofi-wayland for launching apps.</li>
+  <li>mako for notifications.</li>
+  <li>nm-applet for network tray.</li>
+  <li>pavucontrol or audio applets for sound.</li>
+  <li>manual autostart configuration.</li>
+  <li>manual keybinds and menu configuration.</li>
+</ul>
+<p>That was more fiddling than desired.</p>
+<p>LXQt became the better target because it gives a complete lightweight desktop without turning the install into a desktop-plumbing side quest.</p>
+<p>Install after boot:</p>
+<pre><code>sudo pacman -S lxqt sddm xorg xorg-xinit xorg-drivers</code></pre>
+<p>Enable graphical login:</p>
+<pre><code>sudo systemctl enable sddm</code></pre>
+<p>Audio stack, preferably PipeWire:</p>
+<pre><code>sudo pacman -S pipewire pipewire-pulse wireplumber alsa-utils pavucontrol</code></pre>
+<p>Network tray:</p>
+<pre><code>sudo pacman -S network-manager-applet</code></pre>
+<p>Useful desktop tools:</p>
+<pre><code>sudo pacman -S chromium terminology pcmanfm-qt ark gvfs</code></pre>
+<p>This gives a practical desktop with panels, settings, file manager, session management, and tray behavior without hand-building the whole shell.</p>
+
+<h2>14. Networking Issue: Connected with iwctl but DNS Failed</h2>
+<p>At one point, Wi-Fi was connected through iwctl, but hostnames would not resolve. That means the Wi-Fi link was probably up, but DNS was not working.</p>
+<p>Diagnostic sequence:</p>
+<pre><code>ip a
+ping -c 3 1.1.1.1
+ping -c 3 archlinux.org
+cat /etc/resolv.conf</code></pre>
+<p>Interpretation:</p>
+<ul>
+  <li>If ping to 1.1.1.1 works but archlinux.org fails, DNS is broken.</li>
+  <li>If neither works, routing/DHCP/link is broken.</li>
+</ul>
+<p>Temporary DNS fix:</p>
+<pre><code>echo "nameserver 1.1.1.1" > /etc/resolv.conf</code></pre>
+<p>Long-term, NetworkManager should own the connection and DNS handling.</p>
+
+<h2>15. User Account Issue: useradd logan Was Incomplete</h2>
+<p>After boot, a normal user was needed to build yay. makepkg refuses to run as root, correctly. AUR builds should not run as root because PKGBUILDs execute build scripts.</p>
+<p>The first attempt:</p>
+<pre><code>useradd logan</code></pre>
+<p>This created a user but did not create /home/logan.</p>
+<p>Correct command:</p>
+<pre><code>useradd -m -G wheel -s /bin/zsh logan
+passwd logan</code></pre>
+<p>Meaning:</p>
+<ul>
+  <li><code>-m</code> creates the home directory.</li>
+  <li><code>-G wheel</code> adds admin group membership.</li>
+  <li><code>-s /bin/zsh</code> sets the login shell.</li>
+</ul>
+<p>Enable sudo:</p>
+<pre><code>EDITOR=nano visudo</code></pre>
+<p>Uncomment:</p>
+<pre><code>%wheel ALL=(ALL:ALL) ALL</code></pre>
+<p>Switch into the user:</p>
+<pre><code>su - logan</code></pre>
+<p>Build yay:</p>
+<pre><code>git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si</code></pre>
+<p>That creates a proper user workflow: root for system recovery, normal user for daily use and AUR builds.</p>
+
+<h2>16. Final System Model</h2>
+<h3>Final Design</h3>
+<table>
+  <thead>
+    <tr><th>Component</th><th>Detail</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Hardware</td><td>Dell Latitude E5540</td></tr>
+    <tr><td>Firmware path</td><td>Legacy BIOS</td></tr>
+    <tr><td>Partition table</td><td>MBR/DOS</td></tr>
+    <tr><td>Bootloader</td><td>GRUB i386-pc installed to /dev/sda</td></tr>
+    <tr><td>Boot partition</td><td>/dev/sda1, ext4, unencrypted, mounted at /boot</td></tr>
+    <tr><td>Encrypted root</td><td>/dev/sda2, LUKS</td></tr>
+    <tr><td>Unlocked root</td><td>/dev/mapper/cryptroot</td></tr>
+    <tr><td>Root filesystem</td><td>ext4</td></tr>
+    <tr><td>Initramfs</td><td>mkinitcpio with encrypt hook</td></tr>
+    <tr><td>Network</td><td>NetworkManager with iwd available</td></tr>
+    <tr><td>Desktop target</td><td>LXQt with SDDM</td></tr>
+    <tr><td>User</td><td>logan, wheel group, zsh shell</td></tr>
+    <tr><td>AUR path</td><td>yay built as normal user</td></tr>
+  </tbody>
+</table>
+<h3>Final Boot Flow</h3>
+<ol>
+  <li>Power on.</li>
+  <li>BIOS loads GRUB from MBR.</li>
+  <li>GRUB reads /boot on /dev/sda1.</li>
+  <li>GRUB loads Linux kernel and initramfs.</li>
+  <li>Initramfs sees <code>cryptdevice=UUID=&lt;sda2 UUID&gt;:cryptroot</code>.</li>
+  <li>Initramfs asks for LUKS passphrase.</li>
+  <li>cryptsetup opens /dev/sda2 as /dev/mapper/cryptroot.</li>
+  <li>Kernel mounts encrypted root as /.</li>
+  <li>System boots to login or SDDM.</li>
+</ol>
+<p>This is not the most exotic encrypted Linux setup possible. It does not use encrypted /boot, Secure Boot, TPM unlock, detached LUKS headers, or measured boot. Those can be valid, but they add complexity. For an older BIOS laptop, this design is strong because it is repairable and understandable.</p>
+
+<h2>17. Main Lessons</h2>
+<p>The big lesson was that Arch is not hard because the commands are magical. It is hard because the system exposes every layer.</p>
+<h3>The Install Failed When Layers Were Mixed</h3>
+<ul>
+  <li>Mint tools were too old for newer ext4 metadata.</li>
+  <li>Filesystem size and partition size got out of sync.</li>
+  <li>GRUB config and actual bootloader location did not clearly match.</li>
+  <li>Encrypted /boot made GRUB responsible for decryption.</li>
+  <li>Dual boot added complexity while the old partition was already suspect.</li>
+</ul>
+<h3>The Install Worked When the Layers Were Simplified</h3>
+<ul>
+  <li>BIOS mode matched MBR.</li>
+  <li>GRUB installed to /dev/sda.</li>
+  <li>Plain /boot let GRUB stay simple.</li>
+  <li>LUKS protected root.</li>
+  <li>mkinitcpio handled unlock.</li>
+  <li>LXQt avoided manual desktop assembly.</li>
+  <li>A real user account solved makepkg/yay workflow.</li>
+</ul>
+<p>That is the clean engineering takeaway: do not make every component clever at the same time.</p>
+<p>For this Dell, the correct answer was boring in the best way: M</body></html>
