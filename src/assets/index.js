@@ -13,6 +13,7 @@ export const aseLogo    = "https://api.iconify.design/mdi:certificate.svg?color=
 export const hamLogo    = "https://api.iconify.design/mdi:radio-tower.svg?color=915eff";
 export const fossRadar  = "https://opengraph.githubassets.com/1/flyboy-byte/foss-radar";
 export const dragTree   = "https://opengraph.githubassets.com/1/flyboy-byte/drag-tree";
+export const linuxBloat = "https://opengraph.githubassets.com/1/flyboy-byte/LinuxBloat";
 export const github     = "https://api.iconify.design/simple-icons:github.svg?color=ffffff";
 const _m = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"28\" height=\"18\" viewBox=\"0 0 28 18\" fill=\"white\"><rect y=\"0\" width=\"28\" height=\"2\" rx=\"1\"/><rect y=\"8\" width=\"28\" height=\"2\" rx=\"1\"/><rect y=\"16\" width=\"28\" height=\"2\" rx=\"1\"/></svg>";
 const _c = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M18 6L6 18M6 6l12 12\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>";
