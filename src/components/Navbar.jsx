@@ -25,7 +25,7 @@ import React, { useEffect, useState } from 'react';
             ))}
           </ul>
           <a href="/Resume.pdf" target="_blank" rel="noopener noreferrer"
-            className="hidden sm:block text-[15px] font-medium px-4 py-1.5 rounded-lg border border-[#915EFF] text-[#915EFF] hover:bg-[#915EFF] hover:text-white transition-colors duration-200">
+            className="text-[15px] font-medium px-4 py-1.5 rounded-lg border border-[#915EFF] text-[#915EFF] hover:bg-[#915EFF] hover:text-white transition-colors duration-200">
             Resume
           </a>
           <div className="sm:hidden flex flex-1 justify-end items-center">
@@ -39,6 +39,10 @@ import React, { useEffect, useState } from 'react';
                   </li>
                 ))}
               </ul>
+              <a href="/Resume.pdf" target="_blank" rel="noopener noreferrer"
+                className="text-secondary hover:text-white text-[16px] font-medium cursor-pointer pt-2">
+                Resume
+              </a>
             </div>
           </div>
         </div>
