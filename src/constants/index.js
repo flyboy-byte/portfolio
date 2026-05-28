@@ -95,4 +95,10 @@ export const papers = [
     tags: ['Linux', 'Arch', 'Security', 'Systems'],
     link: 'https://flyboy-byte.github.io/portfolio/papers/arch-dell-latitude.html',
   },
+  {
+    title: 'HP LaserJet P1005 on Arch Linux',
+    description: 'Install guide, diagnostics, and open-source fallback driver for the HP LaserJet P1005 host-based laser on Arch Linux — HPLIP, foo2zjs Plan B, CUPS queue management, and a repair log.',
+    tags: ['Linux', 'Arch', 'Hardware', 'CUPS'],
+    link: 'https://flyboy-byte.github.io/portfolio/papers/hp-p1005-arch.html',
+  },
 ];
