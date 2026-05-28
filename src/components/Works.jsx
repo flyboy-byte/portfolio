@@ -9,10 +9,10 @@ import { fadeIn, textVariant } from "../utils/motion";
 
 const ProjectCard = ({ name, description, tags, image, source_code_link }) => (
   <motion.div variants={fadeIn("up", "spring")}>
+    <a href={source_code_link} target="_blank" rel="noopener noreferrer">
     <Tilt
       options={{ max: 45, scale: 1, speed: 450 }}
       className="bg-tertiary p-5 rounded-2xl sm:w-[360px] w-full cursor-pointer"
-      onClick={() => window.open(source_code_link, "_blank")}
     >
       <div className="relative w-full h-[200px]">
         <img
@@ -38,6 +38,7 @@ const ProjectCard = ({ name, description, tags, image, source_code_link }) => (
         ))}
       </div>
     </Tilt>
+    </a>
   </motion.div>
 );
 
