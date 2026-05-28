@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HP LaserJet P1005 — Arch Linux Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0b0d11;
+  --sb-bg: #080a0d;
+  --surface: #11141c;
+  --surface2: #181c27;
+  --border: #1e2232;
+  --text: #c6cbd8;
+  --muted: #525b72;
+  --dim: #7a8399;
+  --amber: #f0a832;
+  --amber2: #c27e1a;
+  --green: #3dd68c;
+  --orange: #e0703a;
+  --blue: #4ea3f5;
+  --red: #e05555;
+  --font: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13.5px;
+  line-height: 1.65;
+  display: flex;
+  min-height: 100vh;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(transparent, transparent 1px, rgba(0,0,0,0.018) 1px, rgba(0,0,0,0.018) 2px);
+  pointer-events: none;
+  z-index: 9000;
+}
+
+/* ── sidebar ─────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 230px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--sb-bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.sb-title {
+  padding: 22px 18px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.sb-title .sb-model {
+  color: var(--amber);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.sb-title .sb-sub {
+  color: var(--muted);
+  font-size: 10.5px;
+  margin-top: 2px;
+}
+
+.toc { padding: 12px 0 24px; }
+.toc-link {
+  display: block;
+  padding: 5px 18px;
+  color: var(--dim);
+  text-decoration: none;
+  font-size: 11.5px;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.toc-link:hover { color: var(--text); }
+.toc-link.active {
+  color: var(--amber);
+  border-left-color: var(--amber);
+}
+.toc-num { color: var(--amber2); margin-right: 6px; }
+.toc-sep {
+  margin: 6px 18px;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+.toc-planb { color: var(--green) !important; }
+.toc-planb.active { color: var(--green) !important; border-left-color: var(--green) !important; }
+
+/* ── main ────────────────────────────────────────── */
+main {
+  margin-left: 230px;
+  padding: 52px 64px 80px;
+  max-width: 1010px;
+  width: 100%;
+}
+
+.doc-header { margin-bottom: 32px; }
+.doc-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.doc-title .title-amber { color: var(--amber); }
+.doc-subtitle {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+.blink {
+  display: inline-block;
+  width: 10px; height: 16px;
+  background: var(--amber);
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: blink 1.1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ── sections ────────────────────────────────────── */
+section { margin-bottom: 40px; }
+
+h2 {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+h2 .prompt { color: var(--amber); user-select: none; }
+h2.planb-h .prompt { color: var(--green); }
+h2.planb-h { color: var(--green); }
+
+h3 {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--dim);
+  margin: 16px 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+p { margin-bottom: 10px; color: var(--text); }
+p:last-child { margin-bottom: 0; }
+
+ul { margin: 8px 0 10px 18px; }
+li { margin-bottom: 3px; }
+ul.sub-ul { margin-left: 34px; margin-top: 2px; }
+
+/* ── code blocks ─────────────────────────────────── */
+.cb {
+  position: relative;
+  margin: 10px 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #07090d;
+}
+.cb pre {
+  padding: 14px 16px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.cb code {
+  font-family: var(--font);
+  font-size: 12.5px;
+  color: #9ab5cc;
+  line-height: 1.6;
+}
+.copy-btn {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 10px;
+  padding: 3px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+  letter-spacing: 0.06em;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.copy-btn:hover { color: var(--amber); border-color: var(--amber2); }
+.copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+/* ── callouts ────────────────────────────────────── */
+.co {
+  margin: 12px 0;
+  padding: 10px 14px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+}
+.co p { margin-bottom: 6px; font-size: 13px; }
+.co p:last-child { margin-bottom: 0; }
+.co ul { font-size: 13px; }
+.co-label {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.co-warn  { background: #140f08; border-left-color: var(--orange); }
+.co-warn  .co-label { color: var(--orange); }
+.co-note  { background: #080f1a; border-left-color: var(--blue); }
+.co-note  .co-label { color: var(--blue); }
+.co-tip   { background: #081410; border-left-color: var(--green); }
+.co-tip   .co-label { color: var(--green); }
+.co .cb   { background: #040608; }
+
+/* ── symptom table ───────────────────────────────── */
+.sym-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+.sym-table th, .sym-table td {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+  text-align: left;
+}
+.sym-table th { background: var(--surface); color: var(--amber); font-weight: 600; }
+.sym-table td { background: var(--surface); }
+.sym-table tr:hover td { background: var(--surface2); }
+.sym-table td code { font-family: var(--font); font-size: 11.5px; color: #7aaecc; }
+
+/* ── repair log ──────────────────────────────────── */
+.log-entry { border: 1px solid var(--border); border-radius: 4px; padding: 16px 18px; margin-bottom: 20px; background: var(--surface); }
+.log-entry-title { font-size: 13.5px; font-weight: 700; color: var(--amber); margin-bottom: 14px; }
+.log-section-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 12px 0 5px; }
+.log-section-label:first-child { margin-top: 0; }
+
+/* ── summary ─────────────────────────────────────── */
+#summary h2 .prompt { color: var(--muted); }
+
+/* ── mobile ──────────────────────────────────────── */
+@media (max-width: 860px) {
+  .sidebar { position: static; width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+  .toc { display: flex; flex-wrap: wrap; gap: 2px; padding: 8px 12px; }
+  .toc-link { padding: 3px 8px; font-size: 11px; }
+  main { margin-left: 0; padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sb-title">
+    <div class="sb-model">HP LaserJet P1005</div>
+    <div class="sb-sub">Arch Linux Guide</div>
+  </div>
+  <nav class="toc">
+    <a class="toc-link" href="#s1"><span class="toc-num">1.</span> Install with HPLIP</a>
+    <a class="toc-link" href="#s2"><span class="toc-num">2.</span> Verify detection</a>
+    <a class="toc-link" href="#s3"><span class="toc-num">3.</span> Install plugin</a>
+    <a class="toc-link" href="#s4"><span class="toc-num">4.</span> Configure printer</a>
+    <a class="toc-link" href="#s5"><span class="toc-num">5.</span> Test</a>
+    <hr class="toc-sep">
+    <a class="toc-link" href="#s6"><span class="toc-num">6.</span> Diagnose</a>
+    <a class="toc-link" href="#s7"><span class="toc-num">7.</span> Manage queue</a>
+    <hr class="toc-sep">
+    <a class="toc-link toc-planb" href="#s8"><span class="toc-num">8.</span> Plan B — foo2zjs</a>
+    <hr class="toc-sep">
+    <a class="toc-link" href="#s9"><span class="toc-num">9.</span> Persistence</a>
+    <a class="toc-link" href="#s10"><span class="toc-num">10.</span> CUPS future</a>
+    <a class="toc-link" href="#summary">&#8250; Summary</a>
+    <hr class="toc-sep">
+    <a class="toc-link" href="#s11"><span class="toc-num">11.</span> Repair log</a>
+  </nav>
+</aside>
+<main>
+<div class="doc-header">
+  <div class="doc-title"><span class="title-amber">HP LaserJet P1005</span> on Arch Linux<span class="blink"></span></div>
+  <div class="doc-subtitle">INSTALL &bull; DIAGNOSE &bull; OPEN-SOURCE FALLBACK &bull; REPAIR LOG</div>
+</div>
+<p>The HP LaserJet P1005 is a host-based (“GDI / winprinter”) laser. It has no built-in page language and no network or IPP support — your PC rasterizes every page, and the printer needs its firmware re-uploaded every time it powers on. Two consequences: setup is fussier than a modern IPP printer, and there are two completely different driver paths you can take.</p>
+<div class="co co-note"><span class="co-label">How to use this guide</span><ul><li><strong>Plan A (Sections 1–5)</strong> — install with HPLIP, HP's official stack (proprietary plugin + <code>hpcups</code>).</li><li><strong>Sections 6–7</strong> — diagnose and manage the queue when something's off.</li><li><strong>Plan B (Section 8)</strong> — if HPLIP keeps fighting you, drop it and use the open-source <code>foo2zjs / foo2xqx</code> driver instead.</li><li><strong>Section 11</strong> — a personal repair log: real problems hit on this machine and what actually fixed them.</li></ul></div><div class="co co-warn"><span class="co-label">Read this first — P1005 quick facts</span><ul><li><strong>Pick one driver stack, not both.</strong> HPLIP and foo2zjs both want to own this printer; running them together causes blank pages. Remove one before installing the other.</li><li><strong>Firmware loads on every power-on.</strong> If the attention light doesn't flash shortly after you power up or replug, firmware didn't upload and nothing will print.</li><li><strong><code>usblp</code> is driver-dependent.</strong> HPLIP talks to the device over libusb and generally does <em>not</em> want <code>usblp</code> bound; the classic foo2xqx hotplug historically <em>needed</em> the <code>usblp</code> lp node to push firmware. Match it to your stack.</li><li><strong>Long game:</strong> CUPS is removing classic drivers/PPDs (Section 10). This printer has no IPP, so plan to wrap it in a "printer application" eventually.</li></ul></div>
+<section id="s1"><h2><span class="prompt">&gt; </span>1. Install with HPLIP (Plan A)</h2><p>Plan A is HP's official stack: HPLIP plus its proprietary plugin, driving the printer through the hpcups filter. This one line pulls the printing core, HP driver, GUI tools, and dependencies via yay:</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>yay -S cups hplip hplip-plugin ghostscript python-pyqt5 python-dbus
+python-pillow python-reportlab system-config-printer
+sudo systemctl enable --now org.cups.cupsd</code></pre></div><div class="co co-note"><span class="co-label">Note</span><p>On Arch the CUPS unit is <code>cups.service</code> (with <code>cups.socket</code>). <code>org.cups.cupsd.service</code> is just an alias, so either name works in <code>systemctl</code> commands.</p></div></section>
+<section id="s2"><h2><span class="prompt">&gt; </span>2. Verify printer detection</h2><p>Plug in the printer and check it's visible on USB. If missing, load the USB printer kernel module as a one-off check.</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>lsusb | grep -i hp
+sudo modprobe usblp
+lsusb</code></pre></div><div class="co co-warn"><span class="co-label">usblp caveat</span><p>Use <code>usblp</code> here only as a detection check. On Plan A (HPLIP) you generally do <em>not</em> want it permanently bound — HPLIP drives the device over libusb.</p></div></section>
+<section id="s3"><h2><span class="prompt">&gt; </span>3. Install HP proprietary plugin (firmware + PPD)</h2><p>The plugin provides the firmware and model driver the P1005 needs to function.</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>sudo hp-plugin -i
+ls /usr/share/hplip/data/firmware/sihpP1005.dl
+ls /usr/share/ppd/HP/HP_LaserJet_P1005.ppd.gz</code></pre></div><div class="co co-warn"><span class="co-label">This step causes most P1005 failures</span><ul><li><code>hp-plugin -i</code> downloads the plugin from HP's servers at install time. That download can fail, or pull a version that doesn't match your installed HPLIP — the single most common P1005 problem. See Section 6 and the repair log (Section 11).</li><li>The firmware file may be <code>sihpP1005.dl</code> <em>or</em> <code>sihpP1005.dl.gz</code> depending on HPLIP version. If the first <code>ls</code> is empty, try the <code>.gz</code> name.</li></ul></div></section>
+<section id="s4"><h2><span class="prompt">&gt; </span>4. Configure the printer</h2><p>Use HPLIP's setup tool to register the printer — interactive or graphical mode (graphical needs PyQt).</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>sudo hp-setup -i
+sudo hp-setup</code></pre></div></section>
+<section id="s5"><h2><span class="prompt">&gt; </span>5. Test the printer</h2><p>Restart the printing service and send a test page or a simple text job.</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>sudo systemctl restart org.cups.cupsd
+hp-testpage -p p1005
+echo "Arch Linux HP P1005 test" | lp -d p1005</code></pre></div><div class="co co-note"><span class="co-label">Note</span><p>Don't assume the queue is named <code>p1005</code>. Run <code>lpstat -t</code> (or <code>lpstat -p</code>) to see the real queue name and use that with <code>lp -d</code>.</p></div></section>
+<section id="s6"><h2><span class="prompt">&gt; </span>6. When it’s not working — diagnose first</h2><p>Before changing anything, find out what's actually failing. A P1005 job can show as "completed" while nothing prints — trust the logs over the queue status.</p><h3>Read the logs</h3><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>journalctl -u cups -b --no-pager
+sudo cupsctl --debug-logging        # verbose logging on
+sudo less /var/log/cups/error_log
+sudo cupsctl --no-debug-logging      # turn it back off when done</code></pre></div><h3>Let HPLIP check itself</h3><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>hp-check -t
+hp-doctor</code></pre></div><p>hp-doctor and hp-check flag a plugin version mismatch directly — the exact failure logged in Entry 1.</p><h3>Common symptoms</h3><table class="sym-table">
+<thead><tr><th>Symptom</th><th>First move</th></tr></thead>
+<tbody>
+<tr><td>Job completes/fails but nothing prints</td><td>Check <code>error_log</code> / <code>journalctl</code> for HPLIP plugin errors. Plugin version mismatch? Fix per the repair log — or switch to Plan B.</td></tr>
+<tr><td>Printer not detected</td><td><code>sudo modprobe usblp</code>, then re-check <code>lsusb</code> (detection only).</td></tr>
+<tr><td>GUI / PyQt errors</td><td><code>sudo pacman -S python-pyqt5 python-dbus</code></td></tr>
+<tr><td>Duplicate queues</td><td>Confirm which queue works first, then remove the bad one: <code>sudo lpadmin -x &lt;QUEUE&gt;</code></td></tr>
+</tbody></table><div class="co co-tip"><span class="co-label">Decision point</span><p>If the plugin mismatch keeps coming back after reinstalling (Entry 1), stop fighting HPLIP and go to <strong>Plan B (Section 8)</strong>.</p></div></section>
+<section id="s7"><h2><span class="prompt">&gt; </span>7. Manage &amp; inspect the queue</h2><p>Commands to view, manage, and debug printer queues.</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>lpstat -p -d
+lpstat -v
+lpstat -t
+sudo lpadmin -x HP_LaserJet_P1005_2     # remove a queue
+sudo systemctl restart org.cups.cupsd
+http://localhost:631                     # CUPS web UI
+hp-toolbox
+hp-systray &amp;</code></pre></div><h3>Rename a queue / set default</h3><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>sudo lpadmin -p newname -E -v usb://HP/LaserJet%20P1005 \
+    -m drv:///hp/hpcups.drv/hp-laserjet_p1005.ppd
+lpoptions -d p1005</code></pre></div></section>
+<section id="s8"><h2 class="planb-h"><span class="prompt">&gt; </span>8. Plan B — open-source driver (foo2zjs / foo2xqx)</h2><p>If HPLIP's plugin keeps breaking — version mismatches, failed downloads, jobs that vanish — the long-standing community answer for this exact printer is to drop HPLIP entirely and use the open-source foo2zjs package (from the AUR). It includes the foo2xqx driver for the P1005's QPDL protocol, loads the same firmware blob, but through its own udev hotplug rules — with no proprietary plugin to version-match.</p><div class="co co-warn"><span class="co-label">Remove HPLIP first, then reboot</span><p>The two stacks collide. If no other HP device needs HPLIP, remove it and reboot so nothing of HPLIP's is still bound to the printer.</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>yay -Rns hplip hplip-plugin
+sudo reboot</code></pre></div></div><p>Then install the open-source driver:</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>yay -S foo2zjs</code></pre></div><p>Make sure the P1005 firmware is present and the hotplug rule is installed so firmware uploads on power-on. If the package didn't fetch firmware automatically, grab it with the project's helper and install the hotplug rules:</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>./getweb P1005          # downloads sihpP1005.dl
+sudo make install-hotplug</code></pre></div><div class="co co-note"><span class="co-label">AUR packages vary</span><p>Exact steps depend on how the current AUR package is built — read its pacman post-install message / PKGBUILD. Some versions handle firmware and hotplug for you; others leave <code>getweb</code> to you.</p></div><p>Power-cycle the printer — the attention light should flash as firmware loads. Then add the queue, easiest via the CUPS web UI:</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>http://localhost:631     # Administration → Add Printer</code></pre></div><p>Pick the local USB HP LaserJet P1005 and choose the foo2xqx PPD (listed as something like "HP LaserJet P1005 Foomatic/foo2xqx"). Or add it from the command line:</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>lpadmin -p P1005 -E -v usb://HP/LaserJet%20P1005 \
+    -P /usr/share/cups/model/HP-LaserJet_P1005.ppd
+lp -d P1005 /usr/share/cups/data/testprint</code></pre></div><div class="co co-warn"><span class="co-label">Blank pages?</span><p>Blank output almost always means firmware didn't load. Confirm the attention light flashed on power-on and that the hotplug rule fired. With foo2xqx's classic hotplug this is exactly where <code>usblp</code> matters — it may need loading so the lp node exists for the firmware push.</p></div></section>
+<section id="s9"><h2><span class="prompt">&gt; </span>9. Keep it working — persistence</h2><p>Power-cycle the printer and print again. Firmware re-uploads automatically on each power-on or replug — with HPLIP via its backend, with foo2zjs via the udev hotplug rule. No flash means no print.</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>dmesg | grep P1005</code></pre></div><div class="co co-tip"><span class="co-label">Snapshot a known-good config</span><p>Once a queue works, save the working CUPS config so you can restore it after an update breaks things:</p><div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>sudo cp /etc/cups/printers.conf ~/printers.conf.good
+sudo cp -r /etc/cups/ppd ~/cups-ppd.good</code></pre></div></div></section>
+<section id="s10"><h2><span class="prompt">&gt; </span>10. Background — CUPS is dropping classic drivers</h2><p>Heads-up for the future. CUPS upstream has deprecated printer drivers, backends, and PPD files; a future release removes them and routes everything through IPP Everywhere and "Printer Applications." The early warning shows up when lpadmin prints "Printer drivers are deprecated and will stop working in a future version of CUPS."</p><p>The P1005 has no IPP at all, so when that lands, both Plan A and Plan B — as classic drivers — stop working as written. The path forward then is to run the driver inside a printer application (e.g. a Ghostscript- or HPLIP-based printer-app) that speaks IPP to CUPS. Not urgent today; just know that's the direction once the warnings start.</p></section>
+<section id="summary"><h2><span class="prompt" style="color:var(--muted)">&gt; </span>Summary</h2><p>Your Arch system now has: HPLIP + Plugin managing firmware and drivers, CUPS handling job queues, HP GUI tools fully functional, automatic firmware upload each time you plug in or reboot. You can now print, monitor, and manage the HP LaserJet P1005 like a native Linux printer.</p><p>If HPLIP ever becomes more trouble than it's worth, Plan B (foo2zjs) is the fallback, and Section 10 covers the longer-term CUPS migration.</p></section>
+<section id="s11"><h2><span class="prompt">&gt; </span>11. Real Fixes Added Over Time</h2><p>Running repair log for my own Arch + HP LaserJet P1005 setup. Not generic docs. Each entry = a real problem I hit and the fix that actually worked. Add a new entry every time something breaks and gets fixed.</p><div class="log-entry">
+<div class="log-entry-title">Entry 1 — HPLIP plugin version mismatch after update/reinstall</div>
+<div class="log-section-label">Symptoms</div>
+<ul>
+<li>HP LaserJet P1005 queue existed.</li>
+<li>CUPS was enabled and active.</li>
+<li>Printer had an HPLIP USB URI.</li>
+<li>Jobs entered the queue but did not actually print.</li>
+<li>The queue could become disabled after failed jobs.</li>
+<li>Installed packages looked correct:
+  <ul class="sub-ul"><li>hplip 3.26.4</li><li>hplip-plugin 3.26.4</li></ul>
+</li>
+<li>But CUPS logs showed HPLIP was still loading an older proprietary plugin binary.</li>
+</ul>
+<div class="log-section-label">Log pattern</div>
+<div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>validate_plugin_version() Plugin version[3.25.8] mismatch with HPLIP version[3.26.4]
+Plugin version is not matching
+m_Job initialization failed with error = 48
+Invalid Library hanlder pLibHandler = NULL.</code></pre></div>
+<div class="log-section-label">Cause</div>
+<p>The installed package version did not prove the loaded plugin binary was correct. A stale older HPLIP plugin binary survived somewhere under the HPLIP plugin paths. HPLIP 3.26.4 refused to use the old 3.25.8 plugin, so the print job failed.</p>
+<div class="log-section-label">Fix</div>
+<p>Remove and reinstall hplip-plugin via pacman/yay. Use find instead of shell globs so zsh does not fail with "no matches found."</p>
+<div class="log-section-label">Commands</div>
+<div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>sudo pacman -Rns hplip-plugin
+sudo find /usr/share/hplip -path '*plugins*' -type f -name '*.so' -delete
+yay -S hplip-plugin
+sudo systemctl restart cups
+sudo cupsenable &lt;QUEUE_NAME&gt;
+sudo cupsaccept &lt;QUEUE_NAME&gt;</code></pre></div>
+<div class="log-section-label">Verify the queue name</div>
+<div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>lpstat -t</code></pre></div>
+<div class="log-section-label">Test print using the real queue name</div>
+<div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>lp -d &lt;QUEUE_NAME&gt; /usr/share/cups/data/testprint</code></pre></div>
+<div class="log-section-label">Example from my setup</div>
+<div class="cb"><button class="copy-btn" onclick="copyCode(this)">COPY</button><pre><code>lp -d Classroom_P1005 /usr/share/cups/data/testprint</code></pre></div>
+<div class="log-section-label">Important notes</div>
+<ul>
+<li>Do not assume the queue is named p1005. Check <code>lpstat -t</code>.</li>
+<li>Do not assume <code>hp-plugin -i</code> download mode works; HP's plugin downloader can fail.</li>
+<li>Do not assume hplip-plugin being installed means the loaded binary is correct.</li>
+<li>Do not use zsh globs like <code>/usr/share/hplip/prnt/plugins/*.so</code> unless the files are confirmed to exist. zsh may stop with "no matches found."</li>
+<li>Do not delete duplicate queues until you confirm which queue actually works.</li>
+<li>A CUPS job can appear completed or processed even when nothing prints, so check <code>journalctl -u cups</code>.</li>
+</ul>
+</div></section>
+</main>
+<script>
+function copyCode(btn) {
+  const code = btn.nextElementSibling.textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'COPIED ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = code;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'COPIED ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+const sections = document.querySelectorAll('section[id], #summary');
+const links = document.querySelectorAll('.toc-link');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector('.toc-link[href="#' + entry.target.id + '"]');
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
