@@ -28,6 +28,10 @@ import React, { useEffect, useState } from 'react';
             className="text-[15px] font-medium px-4 py-1.5 rounded-lg border border-[#915EFF] text-[#915EFF] hover:bg-[#915EFF] hover:text-white transition-colors duration-200">
             Resume
           </a>
+          <a href="https://github.com/flyboy-byte" target="_blank" rel="noopener noreferrer"
+            className="text-[15px] font-medium px-4 py-1.5 rounded-lg border border-[#915EFF] text-[#915EFF] hover:bg-[#915EFF] hover:text-white transition-colors duration-200">
+            GitHub
+          </a>
           <div className="sm:hidden flex flex-1 justify-end items-center">
             <img src={toggle ? close : menu} alt="menu" className="w-[28px] h-[18px] object-contain cursor-pointer" onClick={() => setToggle(!toggle)} />
             <div className={`p-4 black-gradient absolute top-14 right-0 mx-2 my-2 min-w-[140px] z-10 rounded-xl ${toggle?'flex':'hidden'}`}>
