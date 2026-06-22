@@ -3,11 +3,13 @@
 Personal portfolio website for Logan Night (`flyboy-byte`), showcasing expertise in automotive diagnostics, embedded systems, Linux, and amateur radio.
 
 > [!NOTE]
-> **Status**: Live at [flyboy-byte.github.io/portfolio](https://flyboy-byte.github.io/portfolio)
+> **Status**: Live at [logannightingale.com](https://logannightingale.com)
 
 ---
 
 ## 🤖 AI / Vibe Coding Context
+
+See [agents.md](./agents.md) for the full AI handoff guide — deployment pipeline, design system, content system, and component gotchas.
 
 - **Goal**: High-end 3D interactive portfolio highlighting maker skills.
 - **Key Files**:
@@ -17,9 +19,9 @@ Personal portfolio website for Logan Night (`flyboy-byte`), showcasing expertise
 - **Current State**:
   - All content adapted for Logan's profile.
   - EmailJS fully configured (`service_vsyd175` / `template_31v002c`).
-  - `Resume.pdf` uploaded to `public/` (served at `/portfolio/Resume.pdf`).
-  - GitHub Pages serves from `main` branch root.
-  - All external assets via CDN.
+  - Resume served at `/Resume.pdf`.
+  - Custom domain `logannightingale.com` via `public/CNAME`, served through GitHub Pages.
+  - All external 3D/icon assets via CDN.
 
 ---
 
@@ -54,69 +56,21 @@ npm run dev
 
 ## 🌐 Deploy
 
-This repo uses GitHub Pages with the `main` branch root as the source.
+Deployment is fully automated via GitHub Actions — no manual build/commit steps.
 
-**Important**: The `main` root must contain the **built output**, not raw source.
+1. Push to `main`.
+2. The `.github/workflows/deploy.yml` workflow runs `cp index.src.html index.html && npm run build`, then uploads `dist/` as a Pages artifact and deploys it via `actions/deploy-pages`.
+3. **Pages settings**: Source is set to **GitHub Actions** (Settings → Pages). Custom domain `logannightingale.com` is configured there and backed by `public/CNAME` in this repo — removing that file will drop the custom domain on the next deploy.
 
-### Option 1 — GitHub Actions (Recommended)
-
-1. Add this workflow to `.github/workflows/pages.yml`:
-
-```yaml
-name: Build and Deploy
-on:
-  push:
-    branches: [main]
-permissions:
-  contents: write
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - name: Deploy to main root
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          # Remove old build files
-          git remove --cached -r -f assets index.html 2>/dev/null || true
-          # Copy new build from dist/
-          cp -r dist/* .
-          # Stage everything
-          git add -A
-          git commit -m "deploy: build output" || exit 0
-          git push origin main
-```
-
-2. Go to **Settings → Actions → General → Workflow permissions → Read and write permissions → Save**.
-3. Next push auto-builds and deploys.
-
-### Option 2 — Manual Build
-
-```bash
-npm run build
-cp -r dist/* .
-git add -A
-git commit -m "deploy: manual build"
-git push origin main
-```
-
-> **Tip**: Switching to `main /docs` is cleaner — keeps build artifacts out of root. Change in **Settings → Pages → Source → /docs folder**.
+No build output is ever committed to `main`; the repo only contains source.
 
 ## 📝 Status
 
-- [x] React + Vite with `base: "/portfolio/"`
+- [x] React + Vite with `base: "/"`
 - [x] Logan's content throughout
 - [x] EmailJS live
 - [x] Resume.pdf uploaded
-- [x] GitHub Pages configured
-- [ ] Build output committed to `main` root (do once, then Actions handles it)
+- [x] GitHub Pages configured (Actions source, custom domain, HTTPS enforced)
 
 ## 📜 Credits
 

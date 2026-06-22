@@ -38,5 +38,5 @@ To keep the repository lightweight and avoid proxy/LFS issues during early devel
 - **Three.js**: Managed via `@react-three/fiber` and `@react-three/drei`.
 
 ## Maintenance Notes
-- **EmailJS**: Public keys are currently placeholders. Update `SVC`, `TMPL`, and `KEY` in `Contact.jsx` to enable the form.
+- **EmailJS**: Live credentials (`SVC`, `TMPL`, `KEY`) are set in `Contact.jsx`.
 - **Responsive Design**: The `ComputersCanvas` uses a `useState` hook to detect mobile viewports and scale models accordingly.
