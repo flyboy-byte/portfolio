@@ -34,7 +34,7 @@ import React, { useEffect, useState } from 'react';
           </a>
           <div className="sm:hidden flex flex-1 justify-end items-center">
             <img src={toggle ? close : menu} alt="menu" className="w-[28px] h-[18px] object-contain cursor-pointer" onClick={() => setToggle(!toggle)} />
-            <div className={`p-4 black-gradient absolute top-14 right-0 mx-2 my-2 min-w-[140px] z-10 rounded-xl ${toggle?'flex':'hidden'}`}>
+            <div className={`p-4 black-gradient absolute top-14 right-0 mx-2 my-2 min-w-[140px] z-10 rounded-xl ${toggle?'flex flex-col':'hidden'}`}>
               <ul className="list-none flex flex-col gap-4">
                 {navLinks.map(l => (
                   <li key={l.id} onClick={() => { setActive(l.title); setToggle(false); }}
@@ -44,8 +44,12 @@ import React, { useEffect, useState } from 'react';
                 ))}
               </ul>
               <a href="/Resume.pdf" target="_blank" rel="noopener noreferrer"
-                className="text-secondary hover:text-white text-[16px] font-medium cursor-pointer pt-2">
+                className="text-secondary hover:text-white text-[16px] font-medium cursor-pointer pt-4">
                 Resume
+              </a>
+              <a href="https://github.com/flyboy-byte" target="_blank" rel="noopener noreferrer"
+                className="text-secondary hover:text-white text-[16px] font-medium cursor-pointer pt-4">
+                GitHub
               </a>
             </div>
           </div>
