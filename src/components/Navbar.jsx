@@ -25,11 +25,11 @@ import React, { useEffect, useState } from 'react';
             ))}
           </ul>
           <a href="/Resume.pdf" target="_blank" rel="noopener noreferrer"
-            className="text-[15px] font-medium px-4 py-1.5 rounded-lg border border-[#915EFF] text-[#915EFF] hover:bg-[#915EFF] hover:text-white transition-colors duration-200">
+            className="hidden sm:inline-block text-[15px] font-medium px-4 py-1.5 rounded-lg border border-[#915EFF] text-[#915EFF] hover:bg-[#915EFF] hover:text-white transition-colors duration-200">
             Resume
           </a>
           <a href="https://github.com/flyboy-byte" target="_blank" rel="noopener noreferrer"
-            className="text-[15px] font-medium px-4 py-1.5 rounded-lg border border-[#915EFF] text-[#915EFF] hover:bg-[#915EFF] hover:text-white transition-colors duration-200">
+            className="hidden sm:inline-block text-[15px] font-medium px-4 py-1.5 rounded-lg border border-[#915EFF] text-[#915EFF] hover:bg-[#915EFF] hover:text-white transition-colors duration-200">
             GitHub
           </a>
           <div className="sm:hidden flex flex-1 justify-end items-center">
