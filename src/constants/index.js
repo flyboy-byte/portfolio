@@ -1,4 +1,4 @@
-import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs, threejs, bash, gmLogo, aseLogo, hamLogo, fossRadar, dragTree, linuxBloat } from "../assets";
+import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs, threejs, bash, gmLogo, aseLogo, hamLogo, fossRadar, dragTree, linuxBloat, discTracker, portfolioSite, moomooTrader } from "../assets";
   export const navLinks = [
     { id: "about", title: "About" },
     { id: "work", title: "Credentials" },
@@ -70,6 +70,27 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
       tags: [{ name: "Python", color: "blue-text-gradient" }, { name: "Arch Linux", color: "green-text-gradient" }, { name: "CLI", color: "pink-text-gradient" }],
       image: linuxBloat,
       source_code_link: "https://github.com/flyboy-byte/LinuxBloat",
+    },
+    {
+      name: "disc-tracker",
+      description: "Self-hosted disc golf bag tracker — multi-user disc library with flight path visualization, stability filters, and CSV import/export.",
+      tags: [{ name: "Python", color: "blue-text-gradient" }, { name: "Flask", color: "green-text-gradient" }, { name: "Self-hosted", color: "pink-text-gradient" }],
+      image: discTracker,
+      source_code_link: "https://github.com/flyboy-byte/disc-tracker",
+    },
+    {
+      name: "portfolio",
+      description: "This site — a 3D interactive portfolio built with React, Three.js, and Tailwind, deployed via GitHub Actions to a custom domain.",
+      tags: [{ name: "React", color: "blue-text-gradient" }, { name: "Three.js", color: "green-text-gradient" }, { name: "Vite", color: "pink-text-gradient" }],
+      image: portfolioSite,
+      source_code_link: "https://github.com/flyboy-byte/portfolio",
+    },
+    {
+      name: "moomoo-trader",
+      description: "Systematic strategy research and paper-trading platform on the Moomoo API — three validated strategies with backtesting, walk-forward validation, and live dashboards. Paper trading only, no live orders.",
+      tags: [{ name: "Python", color: "blue-text-gradient" }, { name: "Trading", color: "green-text-gradient" }, { name: "Backtesting", color: "pink-text-gradient" }],
+      image: moomooTrader,
+      source_code_link: "https://github.com/flyboy-byte/moomoo-trader",
     },
   ];
 export const papers = [
