@@ -20,7 +20,7 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
     {
       title: "GM ASEP Student",
       company_name: "General Motors — Automotive Service Educational Program",
-      icon: gmLogo, iconBg: "#0a1628", date: "2022 – Present",
+      icon: gmLogo, iconBg: "#0a1628", date: "2025 – Present",
       points: [
         "Studying GM-specific vehicle systems including powertrain, electrical, HVAC, and advanced diagnostics through a dealer-sponsored cooperative program.",
         "Working hands-on in a GM dealership performing warranty repairs alongside certified technicians.",
