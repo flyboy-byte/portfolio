@@ -36,6 +36,7 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
         "A6 — Electrical/Electronic Systems: charging, starting, lighting, and body electrical diagnosis.",
         "A4 — Steering & Suspension: alignment theory, component inspection, and ride-height diagnosis.",
         "A5 — Brakes: hydraulic systems, ABS, and friction system service.",
+        "A7 — Heating & Air Conditioning: HVAC system diagnosis, refrigerant handling, and climate control service.",
       ],
     },
     {
