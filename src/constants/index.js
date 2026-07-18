@@ -1,4 +1,4 @@
-import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs, threejs, bash, gmLogo, aseLogo, hamLogo, fossRadar, dragTree, linuxBloat, discTracker, portfolioSite, moomooTrader } from "../assets";
+import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs, threejs, bash, gmLogo, aseLogo, hamLogo, fossRadar, dragTree, discTracker, portfolioSite, moomooTrader } from "../assets";
   export const navLinks = [
     { id: "about", title: "About" },
     { id: "work", title: "Credentials" },
@@ -64,13 +64,6 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
       tags: [{ name: "TypeScript", color: "blue-text-gradient" }, { name: "React Native", color: "green-text-gradient" }, { name: "Expo", color: "pink-text-gradient" }],
       image: dragTree,
       source_code_link: "https://github.com/flyboy-byte/drag-tree",
-    },
-    {
-      name: "pkgfilter",
-      description: "Arch Linux bloat hunter. Queries every installed package via pacman and lets you progressively filter known-good packages across revision files to isolate removal candidates. Optionally scans for large dirs and files outside package management.",
-      tags: [{ name: "Python", color: "blue-text-gradient" }, { name: "Arch Linux", color: "green-text-gradient" }, { name: "CLI", color: "pink-text-gradient" }],
-      image: linuxBloat,
-      source_code_link: "https://github.com/flyboy-byte/LinuxBloat",
     },
     {
       name: "disc-tracker",
