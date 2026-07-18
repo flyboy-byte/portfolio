@@ -18,6 +18,7 @@ const ProjectCard = ({ name, description, tags, image, source_code_link }) => (
         <img
           src={image}
           alt={name}
+          loading="lazy"
           className="w-full h-full object-contain rounded-2xl bg-[#1d1836]"
         />
         <div className="absolute inset-0 flex justify-end m-3 card-img_hover">

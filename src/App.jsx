@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { About, Contact, Experience, Hero, Navbar, Papers, StarsCanvas, Tech, Works } from "./components";
 
@@ -9,7 +9,7 @@ const App = () => (
         <Navbar /><Hero />
       </div>
       <About /><Experience /><Tech /><Papers /><Works />
-      <div className="relative z-0"><Contact /><StarsCanvas /></div>
+      <div className="relative z-0"><Contact /><Suspense fallback={null}><StarsCanvas /></Suspense></div>
     </div>
   </BrowserRouter>
 );

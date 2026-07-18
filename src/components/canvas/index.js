@@ -1,4 +1,5 @@
-export { default as EarthCanvas } from "./Earth";
-export { default as BallCanvas } from "./Ball";
-export { default as ComputersCanvas } from "./Computers";
-export { default as StarsCanvas } from "./Stars";
+import React from "react";
+export const EarthCanvas     = React.lazy(() => import("./Earth"));
+export const BallCanvas      = React.lazy(() => import("./Ball"));
+export const ComputersCanvas = React.lazy(() => import("./Computers"));
+export const StarsCanvas     = React.lazy(() => import("./Stars"));
