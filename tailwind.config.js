@@ -10,7 +10,7 @@ module.exports = {
         boxShadow: { card: '0 35px 120px -15px #211e35' },
         screens: { xs: '450px' },
         backgroundImage: {
-          'hero-pattern': 'url(https://raw.githubusercontent.com/lohitkolluri/Portfolio-Website/main/public/herobg.png)',
+          'hero-pattern': 'url(/herobg.webp)',
         },
       },
     },

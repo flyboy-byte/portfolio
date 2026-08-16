@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Tilt } from "react-tilt";
 import { motion } from "framer-motion";
 import { styles } from "../styles";
@@ -7,11 +7,25 @@ import { SectionWrapper } from "../hoc";
 import { projects } from "../constants";
 import { fadeIn, textVariant } from "../utils/motion";
 
-const ProjectCard = ({ name, description, tags, image, source_code_link }) => (
+const useMobile = () => {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setM(mq.matches);
+    const h = e => setM(e.matches);
+    mq.addEventListener("change", h);
+    return () => mq.removeEventListener("change", h);
+  }, []);
+  return m;
+};
+
+const ProjectCard = ({ name, description, tags, image, source_code_link }) => {
+  const isMobile = useMobile();
+  return (
   <motion.div variants={fadeIn("up", "spring")}>
     <a href={source_code_link} target="_blank" rel="noopener noreferrer">
     <Tilt
-      options={{ max: 45, scale: 1, speed: 450 }}
+      options={{ max: isMobile ? 0 : 45, scale: 1, speed: 450 }}
       className="bg-tertiary p-5 rounded-2xl sm:w-[360px] w-full cursor-pointer"
     >
       <div className="relative w-full h-[200px]">
@@ -41,7 +55,8 @@ const ProjectCard = ({ name, description, tags, image, source_code_link }) => (
     </Tilt>
     </a>
   </motion.div>
-);
+  );
+};
 
 const Works = () => (
   <>
