@@ -1,4 +1,4 @@
-import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs, threejs, bash, gmLogo, aseLogo, hamLogo, fossRadar, dragTree, discTracker, portfolioSite, moomooTrader } from "../assets";
+import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs, threejs, bash, gmLogo, aseLogo, hamLogo, fossRadar, dragTree, discTracker, portfolioSite, moomooTrader, watranscribe } from "../assets";
   export const navLinks = [
     { id: "about", title: "About" },
     { id: "work", title: "Credentials" },
@@ -81,6 +81,13 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
       source_code_link: "https://github.com/flyboy-byte/portfolio",
     },
     {
+      name: "watranscribe",
+      description: "WhatsApp voice message transcription PWA — drops a voice note in, gets a transcript back. Runs in the browser, no account or server required.",
+      tags: [{ name: "Python", color: "blue-text-gradient" }, { name: "Flask", color: "green-text-gradient" }, { name: "PWA", color: "pink-text-gradient" }],
+      image: watranscribe,
+      source_code_link: "https://github.com/flyboy-byte/watranscribe",
+    },
+    {
       name: "moomoo-trader",
       description: "Systematic strategy research and paper-trading platform on the Moomoo API — three validated strategies with backtesting, walk-forward validation, and live dashboards. Paper trading only, no live orders.",
       tags: [{ name: "Python", color: "blue-text-gradient" }, { name: "Trading", color: "green-text-gradient" }, { name: "Backtesting", color: "pink-text-gradient" }],
@@ -88,41 +95,3 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
       source_code_link: "https://github.com/flyboy-byte/moomoo-trader",
     },
   ];
-export const papers = [
-  {
-    title: 'Evaluating Common AI APIs and Models',
-    description: 'Comparative analysis of frontier and value-tier LLMs — pricing, benchmark scores, latency, and a practical three-lane stack recommendation for a student/technical workflow.',
-    tags: ['AI', 'LLMs', 'APIs', 'Reference'],
-    link: 'https://logannightingale.com/papers/ai-apis-report.pdf',
-  },
-  {
-    title: 'Vendor-Kernel Preservation in Qualcomm-Based SBCs',
-    description: 'Technical guide to replacing the userspace on the Arduino UNO Q while keeping the BSP kernel, bootloader, firmware blobs, and device tree intact.',
-    tags: ['Embedded', 'Linux', 'Qualcomm', 'SBC'],
-    link: 'https://logannightingale.com/papers/qualcomm-kernel.html',
-  },
-  {
-    title: 'Phasing, Math, and Signals — Ham Extra Learner Manual',
-    description: 'Connects trigonometry, complex numbers, and Fourier theory to real RF behavior. Built for Ham Extra exam prep and practical antenna and modulation intuition.',
-    tags: ['Ham Radio', 'RF', 'Math', 'Extra Class'],
-    link: 'https://logannightingale.com/papers/ham-radio-math.pdf',
-  },
-  {
-    title: 'T1D Field Management and Insulin Pen Survival Guide v2',
-    description: 'Evidence-grounded field guide for Type 1 Diabetes management in austere or off-grid conditions — storage limits, monitoring protocols, and evacuation triggers.',
-    tags: ['Medical', 'Field Guide', 'T1D', 'Wilderness'],
-    link: 'https://logannightingale.com/papers/t1d-field-guide.pdf',
-  },
-  {
-    title: 'Pure Arch on an Older Dell Latitude',
-    description: 'A real BIOS/MBR LUKS install progression on a Dell Latitude E5540 — capturing failed paths, ext4 tooling pitfalls, GRUB/LUKS config, and the final clean architecture.',
-    tags: ['Linux', 'Arch', 'Security', 'Systems'],
-    link: 'https://logannightingale.com/papers/arch-dell-latitude.html',
-  },
-  {
-    title: 'HP LaserJet P1005 on Arch Linux',
-    description: 'Install guide, diagnostics, and open-source fallback driver for the HP LaserJet P1005 host-based laser on Arch Linux — HPLIP, foo2zjs Plan B, CUPS queue management, and a repair log.',
-    tags: ['Linux', 'Arch', 'Hardware', 'CUPS'],
-    link: 'https://logannightingale.com/papers/hp-p1005-arch.html',
-  },
-];
