@@ -55,7 +55,7 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
   export const projects = [
     {
       name: "crosslight",
-      description: "Open-source e-reader firmware written in C — custom rendering pipeline, font handling, and display drivers for e-ink hardware.",
+      description: "Fork of the Crosspoint e-reader firmware — added a full Bible reader, UI tweaks, and utility improvements on top of the base C firmware.",
       tags: [{ name: "C", color: "blue-text-gradient" }, { name: "Embedded", color: "green-text-gradient" }, { name: "Firmware", color: "pink-text-gradient" }],
       image: crosslight,
       source_code_link: "https://github.com/flyboy-byte/crosslight",
