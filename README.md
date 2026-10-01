@@ -36,8 +36,8 @@ See [agents.md](./agents.md) for the full AI handoff guide — deployment pipeli
 ## 🛠️ Key Features
 
 - **3D Hero**: Interactive desktop PC model with typewriter skill cycling.
-- **Maker-Centric**: GM ASEP, ASE A4/A5/A6, Extra Class ham radio.
-- **Project Cards**: `foss-radar` and `drag-tree` with GitHub OpenGraph previews.
+- **Maker-Centric**: GM ASEP, ASE A1/A3/A4/A5/A6/A7/A9, Extra Class ham radio.
+- **Project Cards**: crosslight, drag-tree, disc-tracker, portfolio, riscv-pico, moomoo-trader with GitHub OpenGraph previews.
 - **Tech Stack Balls**: Linux, Git, Arduino, Python, TypeScript, React, Three.js, Bash.
 - **Contact Form**: Live EmailJS integration.
 
