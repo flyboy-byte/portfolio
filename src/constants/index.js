@@ -1,4 +1,4 @@
-import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs, threejs, bash, gmLogo, aseLogo, hamLogo, fossRadar, dragTree, discTracker, portfolioSite, moomooTrader, watranscribe } from "../assets";
+import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs, threejs, bash, gmLogo, aseLogo, hamLogo, dragTree, discTracker, portfolioSite, moomooTrader, crosslight, riscvPico } from "../assets";
   export const navLinks = [
     { id: "about", title: "About" },
     { id: "work", title: "Credentials" },
@@ -38,6 +38,7 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
         "A5 — Brakes: hydraulic systems, ABS, and friction system service.",
         "A7 — Heating & Air Conditioning: HVAC system diagnosis, refrigerant handling, and climate control service.",
         "A9 — Light Vehicle Diesel Engines: diesel fuel systems, emissions, and engine mechanical diagnosis.",
+        "A3 — Manual Drive Train & Axles: clutch systems, manual transmissions, drive shafts, and axle/differential service.",
       ],
     },
     {
@@ -53,11 +54,11 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
   ];
   export const projects = [
     {
-      name: "foss-radar",
-      description: "Personal FOSS dashboard for discovering, tracking, and monitoring open-source software worth following.",
-      tags: [{ name: "TypeScript", color: "blue-text-gradient" }, { name: "FOSS tracking", color: "green-text-gradient" }, { name: "Dashboard", color: "pink-text-gradient" }],
-      image: fossRadar,
-      source_code_link: "https://github.com/flyboy-byte/foss-radar",
+      name: "crosslight",
+      description: "Open-source e-reader firmware written in C — custom rendering pipeline, font handling, and display drivers for e-ink hardware.",
+      tags: [{ name: "C", color: "blue-text-gradient" }, { name: "Embedded", color: "green-text-gradient" }, { name: "Firmware", color: "pink-text-gradient" }],
+      image: crosslight,
+      source_code_link: "https://github.com/flyboy-byte/crosslight",
     },
     {
       name: "drag-tree",
@@ -81,11 +82,11 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
       source_code_link: "https://github.com/flyboy-byte/portfolio",
     },
     {
-      name: "watranscribe",
-      description: "WhatsApp voice message transcription PWA — drops a voice note in, gets a transcript back. Runs in the browser, no account or server required.",
-      tags: [{ name: "Python", color: "blue-text-gradient" }, { name: "Flask", color: "green-text-gradient" }, { name: "PWA", color: "pink-text-gradient" }],
-      image: watranscribe,
-      source_code_link: "https://github.com/flyboy-byte/watranscribe",
+      name: "riscv-pico",
+      description: "Real Linux on a Raspberry Pi Pico — the RP2040 emulates a RISC-V CPU in software, with SPI PSRAM as system memory, PS/2 keyboard input, and VGA video output.",
+      tags: [{ name: "C", color: "blue-text-gradient" }, { name: "RISC-V", color: "green-text-gradient" }, { name: "Embedded Linux", color: "pink-text-gradient" }],
+      image: riscvPico,
+      source_code_link: "https://github.com/flyboy-byte/riscv-pico",
     },
     {
       name: "moomoo-trader",
