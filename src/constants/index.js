@@ -39,6 +39,7 @@ import { carWrench, arduino, linux, radioTower, git, python, typescript, reactjs
         "A7 — Heating & Air Conditioning: HVAC system diagnosis, refrigerant handling, and climate control service.",
         "A9 — Light Vehicle Diesel Engines: diesel fuel systems, emissions, and engine mechanical diagnosis.",
         "A3 — Manual Drive Train & Axles: clutch systems, manual transmissions, drive shafts, and axle/differential service.",
+        "A2 — Automatic Transmission/Transaxle: hydraulic circuits, electronic controls, clutch packs, and transmission diagnosis and overhaul.",
       ],
     },
     {
