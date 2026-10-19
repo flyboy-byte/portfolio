@@ -35,7 +35,7 @@ See [agents.md](./agents.md) for the full AI handoff guide — deployment pipeli
 
 ## 🛠️ Key Features
 
-- **3D Hero**: Interactive desktop PC model with typewriter skill cycling.
+- **3D Hero**: Interactive desktop PC model with typewriter skill cycling. Self-hosted in `public/models/`; phones get an optimized GLB (see [docs/3D_PLAN.md](./docs/3D_PLAN.md)).
 - **Maker-Centric**: GM ASEP, ASE A1/A2/A3/A4/A5/A6/A7/A9, Extra Class ham radio.
 - **Project Cards**: crosslight, drag-tree, disc-tracker, portfolio, riscv-pico, moomoo-trader with GitHub OpenGraph previews.
 - **Tech Stack Balls**: Linux, Git, Arduino, Python, TypeScript, React, Three.js, Bash.
@@ -75,6 +75,7 @@ No build output is ever committed to `main`; the repo only contains source.
 ## 📜 Credits
 
 - **Base Template**: [lohitkolluri/Portfolio-Website](https://github.com/lohitkolluri/Portfolio-Website)
+- **3D models (CC-BY-4.0, Sketchfab)**: ["Gaming Desktop PC"](https://sketchfab.com/3d-models/gaming-desktop-pc-d1d8282c9916438091f11aeb28787b66) by [Yolala1232](https://sketchfab.com/Yolala1232); ["Stylized planet"](https://sketchfab.com/3d-models/stylized-planet-789725db86f547fc9163b00f302c3e70) by [cmzw](https://sketchfab.com/cmzw). The mobile PC is an optimized derivative of the first.
 
 ---
 *Built with React, Three.js, and Framer Motion.*

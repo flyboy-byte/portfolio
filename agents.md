@@ -265,7 +265,7 @@ Steps to add a new paper:
 - GitHub links to `https://github.com/flyboy-byte`
 
 ### Hero.jsx
-- 3D computer canvas (`ComputersCanvas`) is hidden on mobile via CSS — no JS detection needed there
+- 3D computer canvas (`ComputersCanvas`) renders on both: stock `public/models/desktop_pc/` on desktop, optimized `public/models/pc-mobile.glb` on mobile (JS `matchMedia` switch, no OrbitControls on mobile so scroll works). See `docs/3D_PLAN.md`.
 - Typewriter strings are hardcoded in Hero.jsx, not in constants
 
 ### Tech.jsx

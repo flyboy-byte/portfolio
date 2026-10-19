@@ -14,9 +14,14 @@ All text content, experience data, and project metadata are centralized in `src/
 - **Rule**: Avoid hardcoding content directly into components. Always import from constants.
 
 ### 3D Asset Strategy
-To keep the repository lightweight and avoid proxy/LFS issues during early development, we use external URLs for heavy assets:
-- **Models**: Loaded via `useGLTF` from raw GitHub URLs (see `src/components/canvas/Computers.jsx`).
+Models are self-hosted in `public/models/` (since 2026-10-18; they used to load from the template author's repo):
+- `desktop_pc/` — stock Sketchfab glTF, served to desktop (>768px). ~8.8 MB, 685 meshes. Left untouched on purpose.
+- `pc-mobile.glb` — the same model, optimized for phones (~2.0 MB): meshes merged, meshopt-compressed geometry, WebP textures capped at 1024px except the 1920x1080 monitor screen. Needs `EXT_meshopt_compression` + `EXT_texture_webp` (drei's `useGLTF` and three's GLTFLoader handle both).
+- `planet/` — stock Sketchfab glTF for the Contact globe. Not optimized (~2 MB).
 - **Icons**: Fetched from Iconify API (see `src/assets/index.js`).
+- **Project card images**: GitHub OpenGraph URLs (see `src/assets/index.js`).
+
+Both models are CC-BY-4.0 (see Credits in `README.md`). Build steps for `pc-mobile.glb` and the follow-up plan are in `docs/3D_PLAN.md`.
 
 ## Component Breakdown
 
@@ -39,4 +44,4 @@ To keep the repository lightweight and avoid proxy/LFS issues during early devel
 
 ## Maintenance Notes
 - **EmailJS**: Live credentials (`SVC`, `TMPL`, `KEY`) are set in `Contact.jsx`.
-- **Responsive Design**: The `ComputersCanvas` uses a `useState` hook to detect mobile viewports and scale models accordingly.
+- **Responsive Design**: `ComputersCanvas` detects mobile (`max-width: 768px`) with `matchMedia` and remounts the Canvas (`key`) with a different setup: optimized GLB, wider camera (fov 52 vs 25), no shadows, lower pixel-ratio cap, no `OrbitControls` (it forces `touch-action: none` and would block page scroll), and a slow idle sway that pauses off-screen and under `prefers-reduced-motion`. The sway needs `invalidate()` each frame because the canvas uses `frameloop="demand"`.
