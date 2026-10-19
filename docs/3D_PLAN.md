@@ -13,32 +13,28 @@ Status: shipped and live (2026-10-18). Nothing below is in progress. The options
 ## Do not re-raise
 
 - Draco: not used on purpose. Meshopt needs no external decoder; drei handles it.
+- On-site credit for the CC-BY models: Logan decided against it (2026-10-18). Credit lives in README Credits only. Do not suggest it again.
 - Optimizing the desktop model: deliberately left stock. Logan wanted desktop "mostly stock" and the optimized version for mobile only.
 - Moving the PC down or enlarging it on mobile to close the gap above the scroll indicator: tried reasoning it through (2026-10-18); the PC already sits near the center of the free space and a bigger PC crops again.
 
 ## Options
 
-### A. Attribution (do this first, it is a license requirement, not polish)
-Both models are CC-BY-4.0 (Yolala1232 "Gaming Desktop PC", cmzw "Stylized planet"). README Credits now lists them, but the **site itself shows no credit**. CC-BY wants attribution reasonably visible to users.
-- Add a small footer line or a credits section linking both authors and the licence. Content source of truth is `src/constants/index.js`.
-- The mobile GLB is a modified derivative of the PC model; say so ("optimized for mobile").
-
-### B. Personalize the scene (the real goal)
+### A. Personalize the scene (the real goal)
 Cheapest first:
 1. Replace the monitor screen texture with something that is Logan's: a real terminal, the portfolio code, a GDS2/diagnostic screen, an SDR waterfall. The screen texture is `Material.074_30_baseColor.png` (1920x1080) in `desktop_pc/textures/`; in `pc-mobile.glb` it is the one non-square 1920x1080 WebP. Swap the image, re-run the mobile build.
 2. Re-skin small props via texture swaps (mousepad, wallpaper on screen, case fan colors).
 3. Heavier: edit the model in Blender (swap the desk for a workbench, add a radio, a wrench, an ESP32 board), re-export glTF, rebuild the mobile GLB. Needs Blender and modeling time.
 4. Heaviest: a custom scene (car, engine bay, radio rack) in Blender. Same pipeline.
 
-### C. Real-device performance check
+### B. Real-device performance check
 Measure instead of guessing: Chrome remote debugging on the phone, look at frame time and GPU memory with the sway running. If it is heavy, lower the sway (or drop it), cap `dpr` to 1, or pause rendering while the nav menu is open.
 
-### D. Optimize the rest
+### C. Optimize the rest
 - `Ball.jsx` and `Earth.jsx` run `frameloop="always"` and keep rendering off-screen. Gate them with an `IntersectionObserver` the way `Computers.jsx` does for the sway. The Tech section can have 8 live canvases at once.
 - Planet: run the same optimize pipeline (2 MB -> well under 1 MB).
-- KTX2 (Basis) textures instead of WebP would cut GPU memory further but needs a transcoder; only worth it if C shows a memory problem.
+- KTX2 (Basis) textures instead of WebP would cut GPU memory further but needs a transcoder; only worth it if B shows a memory problem.
 
-### E. Framing polish
+### D. Framing polish
 The PC is cropped slightly differently at different phone aspect ratios (tuned on a ~19.5:9 Android screen). If it looks off on another device, adjust the group position and fov in `Computers.jsx`.
 
 ## Rebuilding `pc-mobile.glb`
