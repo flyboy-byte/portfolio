@@ -23,6 +23,9 @@ Models are self-hosted in `public/models/` (since 2026-10-18; they used to load 
 
 Both models are CC-BY-4.0 (see Credits in `README.md`). Build steps for `pc-mobile.glb` and the follow-up plan are in `docs/3D_PLAN.md`.
 
+## Routing
+Routes live in `src/App.jsx`: `/` (`pages/Home.jsx`, the original one-page site), `/blog`, `/blog/:slug` (lazy-loaded). See `docs/BLOG.md` for the blog's structure, drafts and publishing.
+
 ## Component Breakdown
 
 ### 1. Navigation (`Navbar.jsx`)

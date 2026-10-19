@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import blog from "./vite-plugin-blog.js";
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), blog()],
   base: "/",
   build: {
     rollupOptions: {

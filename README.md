@@ -40,6 +40,7 @@ See [agents.md](./agents.md) for the full AI handoff guide — deployment pipeli
 - **Project Cards**: crosslight, drag-tree, disc-tracker, portfolio, riscv-pico, moomoo-trader with GitHub OpenGraph previews.
 - **Tech Stack Balls**: Linux, Git, Arduino, Python, TypeScript, React, Three.js, Bash.
 - **Contact Form**: Live EmailJS integration.
+- **Blog**: Markdown posts in `src/posts/` with drafts, RSS and syntax highlighting; see [docs/BLOG.md](./docs/BLOG.md).
 
 ## 📦 Project Structure
 

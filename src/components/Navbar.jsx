@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-  import { Link } from 'react-router-dom';
+  import { Link, useLocation } from 'react-router-dom';
+  import { hasPosts } from '../blog/posts';
   import { close, logo, menu } from '../assets';
   import { navLinks } from '../constants';
   import { styles } from '../styles';
   const Navbar = () => {
     const [active, setActive] = useState('');
     const [toggle, setToggle] = useState(false);
+    const onHome = useLocation().pathname === '/';
+    const hrefFor = (id) => (onHome ? `#${id}` : `/#${id}`);
+    // Blog link appears only once a published post exists (drafts are dev-only).
+    const links = hasPosts ? [...navLinks, { id: 'blog', title: 'Blog', to: '/blog' }] : navLinks;
     useEffect(() => { if (toggle) setActive(''); }, [toggle]);
     return (
       <nav className={`${styles.paddingX} w-full flex items-center py-3 fixed top-0 z-20 bg-primary`}>
@@ -17,10 +22,10 @@ import React, { useEffect, useState } from 'react';
             </p>
           </Link>
           <ul className="list-none hidden sm:flex flex-row gap-6 items-center">
-            {navLinks.map(l => (
+            {links.map(l => (
               <li key={l.id} onClick={() => setActive(l.title)}
                 className={`${active===l.title?'text-white':'text-secondary'} hover:text-white text-[18px] font-medium cursor-pointer`}>
-                <a href={`#${l.id}`}>{l.title}</a>
+                {l.to ? <Link to={l.to}>{l.title}</Link> : <a href={hrefFor(l.id)}>{l.title}</a>}
               </li>
             ))}
           </ul>
@@ -36,10 +41,10 @@ import React, { useEffect, useState } from 'react';
             <img src={toggle ? close : menu} alt="menu" className="w-[28px] h-[18px] object-contain cursor-pointer" onClick={() => setToggle(!toggle)} />
             <div className={`p-4 black-gradient absolute top-14 right-0 mx-2 my-2 min-w-[140px] z-10 rounded-xl ${toggle?'flex flex-col':'hidden'}`}>
               <ul className="list-none flex flex-col gap-4">
-                {navLinks.map(l => (
+                {links.map(l => (
                   <li key={l.id} onClick={() => { setActive(l.title); setToggle(false); }}
                     className="text-secondary hover:text-white text-[16px] font-medium cursor-pointer">
-                    <a href={`#${l.id}`}>{l.title}</a>
+                    {l.to ? <Link to={l.to}>{l.title}</Link> : <a href={hrefFor(l.id)}>{l.title}</a>}
                   </li>
                 ))}
               </ul>

@@ -1,16 +1,21 @@
-import React, { Suspense } from "react";
-import { BrowserRouter } from "react-router-dom";
-import { About, Contact, Experience, Hero, Navbar, StarsCanvas, Tech, Works } from "./components";
+import React, { Suspense, lazy } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+
+// Blog pages (and markdown/highlighting deps) load only when visited.
+const BlogIndex = lazy(() => import("./pages/BlogIndex"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 
 const App = () => (
   <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-    <div className="relative z-0 bg-primary">
-      <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
-        <Navbar /><Hero />
-      </div>
-      <About /><Experience /><Tech /><Works />
-      <div className="relative z-0"><Contact /><Suspense fallback={null}><StarsCanvas /></Suspense></div>
-    </div>
+    <Suspense fallback={<div className="bg-primary min-h-screen" />}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/blog" element={<BlogIndex />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="*" element={<Home />} />
+      </Routes>
+    </Suspense>
   </BrowserRouter>
 );
 

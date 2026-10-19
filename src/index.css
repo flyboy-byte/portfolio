@@ -146,3 +146,33 @@
 .confirmation {
   color: #00ff00;
 }
+
+/* Blog post body (rendered markdown) */
+.blog-prose { color: #d6d3e6; font-size: 17px; line-height: 1.85; }
+.blog-prose > * + * { margin-top: 1.25em; }
+.blog-prose * { font-family: inherit; color: inherit; }
+.blog-prose h2 { color: #fff; font-weight: 800; font-size: 1.7rem; line-height: 1.25; margin-top: 2.2em; }
+.blog-prose h3 { color: #fff; font-weight: 700; font-size: 1.3rem; margin-top: 1.8em; }
+.blog-prose a { color: #915EFF; text-decoration: underline; text-underline-offset: 3px; }
+.blog-prose strong { color: #fff; }
+.blog-prose ul, .blog-prose ol { padding-left: 1.4em; }
+.blog-prose ul { list-style: disc; }
+.blog-prose ol { list-style: decimal; }
+.blog-prose li + li { margin-top: 0.4em; }
+.blog-prose blockquote { border-left: 3px solid #915EFF; padding-left: 1em; color: #aaa6c3; }
+.blog-prose hr { border: 0; border-top: 1px solid #ffffff1a; }
+.blog-prose img { max-width: 100%; border-radius: 12px; }
+.blog-prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.88em; }
+.blog-prose :not(pre) > code { background: #151030; border: 1px solid #ffffff14; border-radius: 6px; padding: 0.1em 0.4em; color: #e9e4ff; }
+.blog-prose pre { background: #0b0820; border: 1px solid #ffffff14; border-radius: 12px; padding: 1em 1.2em; overflow-x: auto; line-height: 1.6; }
+.blog-prose pre code { background: none; border: 0; padding: 0; }
+.blog-prose table { width: 100%; border-collapse: collapse; font-size: 0.95em; display: block; overflow-x: auto; }
+.blog-prose th, .blog-prose td { border: 1px solid #ffffff1a; padding: 0.5em 0.8em; text-align: left; }
+.blog-prose th { color: #fff; background: #151030; }
+.hljs-comment, .hljs-quote { color: #6f6a8f; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-literal, .hljs-built_in { color: #c4a5ff; }
+.hljs-string, .hljs-addition, .hljs-attr { color: #8ee0b0; }
+.hljs-number, .hljs-symbol, .hljs-bullet { color: #ffb86c; }
+.hljs-title, .hljs-function, .hljs-name, .hljs-section { color: #7cc4ff; }
+.hljs-variable, .hljs-template-variable, .hljs-type, .hljs-params { color: #f4c6ff; }
+.hljs-deletion { color: #ff7b8f; }

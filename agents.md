@@ -266,6 +266,7 @@ Steps to add a new paper:
 
 ### Hero.jsx
 - 3D computer canvas (`ComputersCanvas`) renders on both: stock `public/models/desktop_pc/` on desktop, optimized `public/models/pc-mobile.glb` on mobile (JS `matchMedia` switch, no OrbitControls on mobile so scroll works). See `docs/3D_PLAN.md`.
+- Blog: markdown posts in `src/posts/`, routes `/blog` and `/blog/:slug`, drafts hidden in production. See `docs/BLOG.md`. The site is no longer a single page; `App.jsx` is a router and the old page is `src/pages/Home.jsx`.
 - Typewriter strings are hardcoded in Hero.jsx, not in constants
 
 ### Tech.jsx
