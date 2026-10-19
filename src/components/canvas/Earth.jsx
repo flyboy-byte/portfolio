@@ -2,7 +2,7 @@ import {Suspense, useRef} from "react";
   import {Canvas, useFrame} from "@react-three/fiber";
   import {Preload, useGLTF} from "@react-three/drei";
   import CanvasLoader from "../Loader";
-  const GLTF="https://raw.githubusercontent.com/lohitkolluri/Portfolio-Website/main/public/planet/scene.gltf";
+  const GLTF="/models/planet/scene.gltf";
   const Earth=()=>{
     const ref=useRef();
     const e=useGLTF(GLTF);

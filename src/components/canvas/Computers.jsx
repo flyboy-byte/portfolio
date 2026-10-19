@@ -3,10 +3,11 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 import CanvasLoader from "../Loader";
 
-const GLTF = "https://raw.githubusercontent.com/lohitkolluri/Portfolio-Website/main/public/desktop_pc/scene.gltf";
+const DESKTOP_GLTF = "/models/desktop_pc/scene.gltf";
+const MOBILE_GLB = "/models/pc-mobile.glb";
 
-const Computer = ({ isMobile }) => {
-  const { scene } = useGLTF(GLTF);
+const Computer = ({ url }) => {
+  const { scene } = useGLTF(url);
   return (
     <mesh>
       <hemisphereLight intensity={0.15} groundColor="black" />
@@ -30,13 +31,20 @@ const ComputersCanvas = () => {
     return () => mq.removeEventListener("change", h);
   }, []);
 
-  if (isMobile) return null;
-
+  // OrbitControls forces touch-action:none, which would block page scroll over the hero on touch devices.
   return (
-    <Canvas frameloop="demand" shadows dpr={[1, 2]} camera={{ position: [20, 3, 5], fov: 25 }} gl={{ preserveDrawingBuffer: true }}>
+    <Canvas
+      key={isMobile ? "m" : "d"}
+      frameloop="demand"
+      shadows={!isMobile}
+      dpr={isMobile ? [1, 1.5] : [1, 2]}
+      camera={{ position: [20, 3, 5], fov: isMobile ? 48 : 25 }}
+      gl={{ preserveDrawingBuffer: true }}
+      style={{ touchAction: isMobile ? "pan-y" : undefined }}
+    >
       <Suspense fallback={<CanvasLoader />}>
-        <OrbitControls enableZoom={false} maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 2} />
-        <Memo isMobile={isMobile} />
+        {!isMobile && <OrbitControls enableZoom={false} maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 2} />}
+        <Memo url={isMobile ? MOBILE_GLB : DESKTOP_GLTF} />
       </Suspense>
       <Preload all />
     </Canvas>
