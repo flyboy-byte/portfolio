@@ -9,7 +9,7 @@ Personal portfolio website for Logan Night (`flyboy-byte`), showcasing expertise
 
 ## 🤖 AI / Vibe Coding Context
 
-See [agents.md](./agents.md) for the full AI handoff guide — deployment pipeline, design system, content system, and component gotchas.
+See [docs/STATE.md](./docs/STATE.md) for current state and open threads, and [agents.md](./agents.md) for the full AI handoff guide — deployment pipeline, design system, content system, and component gotchas.
 
 - **Goal**: High-end 3D interactive portfolio highlighting maker skills.
 - **Key Files**:

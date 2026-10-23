@@ -1,5 +1,7 @@
 # agents.md — Logan Night Portfolio
 
+> Current state, open threads and do-not-re-raise list: [docs/STATE.md](./docs/STATE.md) (read first).
+
 > This file is the source of truth for any AI continuing work on this project.
 > Read it fully before touching any file.
 
