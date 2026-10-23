@@ -23,7 +23,7 @@ Status: live and healthy (2026-10-23). Last deployed commit `6b75e59` (CI green)
 - **Awaiting Logan's feedback on the rebuilt solder station** (2026-10-23): possible tweaks are board contents (generic ESP32 style; he may want it to match a real build), layout, smoke strength. The old phone-clipping issue is gone (everything at z <= 80 cm).
 - Typing animation on the monitor (needs several screen frames; GPU memory is the concern), mouse-parallax camera drift.
 - Lighter Linux icon (`public/icons/linux.svg` is 195 KB because of an embedded Tux).
-- Mobile pixel-ratio cap is 1.5 (`dpr={[1, 1.5]}` in `Computers.jsx`); 2 would sharpen the phone view at a GPU/battery cost. Logan has not asked for it.
+- ~~Mobile pixel-ratio cap 1.5~~ raised to 2 (`dpr={[1, 2]}` for both, 2026-10-23) after Logan asked for a sharper hero; bench canvas textures are drawn at 2x with max anisotropy. Real-phone frame rate/battery still unmeasured; if it is heavy, drop the phone back to 1.5.
 - Tech section (8 identical balls), Contact form styling.
 - Blog: content, prerendering (note canonical/OG caveat in `docs/BLOG_PLAN.md`), project cards linking to write-ups.
 

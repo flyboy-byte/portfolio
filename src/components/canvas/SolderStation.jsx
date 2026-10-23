@@ -31,14 +31,19 @@ const IRON_LEN = 19;
 
 const WISPS = 4;
 
-const canvasTexture = (w, h, draw) => {
+// Drawn at 2x the layout size so small text and traces stay crisp when the camera gets close.
+const TEX_SCALE = 2;
+
+const canvasTexture = (w, h, draw, anisotropy = 1) => {
   const c = document.createElement("canvas");
-  c.width = w;
-  c.height = h;
-  draw(c.getContext("2d"), w, h);
+  c.width = w * TEX_SCALE;
+  c.height = h * TEX_SCALE;
+  const g = c.getContext("2d");
+  g.scale(TEX_SCALE, TEX_SCALE);
+  draw(g, w, h);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 8;
+  t.anisotropy = anisotropy;
   return t;
 };
 
@@ -105,6 +110,7 @@ const useMaterials = () => {
   const { gl } = useThree();
   return useMemo(() => {
     // A small studio reflection map, applied only to this bench, so metal reads as metal without relighting the desk model.
+    const aniso = gl.capabilities.getMaxAnisotropy();
     const pmrem = new THREE.PMREMGenerator(gl);
     const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     pmrem.dispose();
@@ -126,8 +132,8 @@ const useMaterials = () => {
       solder: std("#b8bbc4", 0.3, 0.9),
       capBlue: std("#24357a", 0.4),
       resistor: std("#d8c49a", 0.6),
-      board: std("#ffffff", 0.5, 0, { map: canvasTexture(512, 400, drawBoard) }),
-      display: new THREE.MeshBasicMaterial({ map: canvasTexture(256, 128, drawDisplay), toneMapped: false }),
+      board: std("#ffffff", 0.5, 0, { map: canvasTexture(512, 400, drawBoard, aniso) }),
+      display: new THREE.MeshBasicMaterial({ map: canvasTexture(256, 128, drawDisplay, aniso), toneMapped: false }),
       tip: std("#9a9aa4", 0.3, 1, { emissive: "#ff5a10", emissiveIntensity: 0 }),
       led: new THREE.MeshBasicMaterial({ color: "#ff3030", toneMapped: false }),
       smoke: canvasTexture(64, 64, smokeSprite),

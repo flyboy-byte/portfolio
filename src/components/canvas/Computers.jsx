@@ -159,7 +159,7 @@ const ComputersCanvas = () => {
       key={isMobile ? "m" : "d"}
       frameloop="demand"
       shadows={!isMobile}
-      dpr={isMobile ? [1, 1.5] : [1, 2]}
+      dpr={[1, 2]}
       camera={{ position: [20, 3, 5], fov: isMobile ? 52 : 25 }}
       gl={{ preserveDrawingBuffer: true }}
       style={{ touchAction: isMobile ? "pan-y" : undefined }}
