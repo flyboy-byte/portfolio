@@ -26,6 +26,9 @@ Both models are CC-BY-4.0 (see Credits in `README.md`). Build steps for `pc-mobi
 ## Routing
 Routes live in `src/App.jsx`: `/` (`pages/Home.jsx`, the original one-page site), `/blog`, `/blog/:slug` (lazy-loaded). See `docs/BLOG.md` for the blog's structure, drafts and publishing.
 
+## Head metadata
+`index.src.html` carries the favicon (`public/favicon.svg`, `public/apple-touch-icon.png`), `theme-color`, canonical, and Open Graph / Twitter tags. The share image is `public/og-image.png` (1200x630). It was rendered once from an HTML mock with the self-hosted Poppins and JetBrains Mono fonts; re-render it if the tagline or palette changes. URLs are absolute on `https://logannightingale.com/`.
+
 ## Component Breakdown
 
 ### 1. Navigation (`Navbar.jsx`)

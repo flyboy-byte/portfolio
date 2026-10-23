@@ -25,7 +25,7 @@ Status: scaffold shipped and live, no blog content published (2026-10-19). Logan
 Posts built from material that already exists: the attempt logs and dead ends in `drag-tree/PLAN.md`, the strategy graveyard in `moomoo/docs/`, `crosslight`, `riscv-pico`, `disc-tracker`. Shape: problem, decision, dead end, result. Start with 2 or 3 strong posts, not one per repo; a thin blog looks worse than none. Claude can draft from docs and git history; Logan edits.
 
 ### B. Prerender for SEO and link previews
-Pages render client-side, so Slack/Discord/X previews and some crawlers see only the generic site title. Fix: build-time step in `vite-plugin-blog.js` writing `dist/blog/<slug>/index.html` with per-post title, description and Open Graph tags (this also fixes the HTTP 404 on direct hits). Worth doing before sharing links publicly.
+Pages render client-side, so Slack/Discord/X previews and some crawlers see only the generic site title. Fix: build-time step in `vite-plugin-blog.js` writing `dist/blog/<slug>/index.html` with per-post title, description and Open Graph tags (this also fixes the HTTP 404 on direct hits). Worth doing before sharing links publicly. Note (2026-10-23): the site-wide `canonical` and `og:*` tags in `index.src.html` point at the home page, and `404.html` is a copy of `index.html`, so until posts are prerendered every blog URL advertises the home page's canonical and preview card. Per-post tags must replace them.
 
 ### C. Discoverability
 Link project cards in `Works.jsx` to their write-up (uses the `project:` frontmatter field already parsed), a "Writing" section on the home page, a sitemap, per-post share images.
