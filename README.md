@@ -76,7 +76,7 @@ No build output is ever committed to `main`; the repo only contains source.
 ## 📜 Credits
 
 - **Base Template**: [lohitkolluri/Portfolio-Website](https://github.com/lohitkolluri/Portfolio-Website)
-- **3D models (CC-BY-4.0, Sketchfab)**: ["Gaming Desktop PC"](https://sketchfab.com/3d-models/gaming-desktop-pc-d1d8282c9916438091f11aeb28787b66) by [Yolala1232](https://sketchfab.com/Yolala1232); ["Stylized planet"](https://sketchfab.com/3d-models/stylized-planet-789725db86f547fc9163b00f302c3e70) by [cmzw](https://sketchfab.com/cmzw). Modified: the monitor screen texture is replaced, and the mobile PC is an optimized derivative.
+- **3D models (CC-BY-4.0, Sketchfab)**: ["Gaming Desktop PC"](https://sketchfab.com/3d-models/gaming-desktop-pc-d1d8282c9916438091f11aeb28787b66) by [Yolala1232](https://sketchfab.com/Yolala1232); ["Stylized planet"](https://sketchfab.com/3d-models/stylized-planet-789725db86f547fc9163b00f302c3e70) by [cmzw](https://sketchfab.com/cmzw). Modified: the monitor screen texture is replaced, the left speaker is removed, and the mobile PC is an optimized derivative.
 
 ---
 *Built with React, Three.js, and Framer Motion.*

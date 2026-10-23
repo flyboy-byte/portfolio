@@ -36,6 +36,10 @@ All in `Computers.jsx`, all skipped under `prefers-reduced-motion`, all paused w
 - Cost: the desktop canvas used to render only on demand (idle most of the time). It now redraws every frame while the hero is on screen, as the phone sway already did. Real-device battery and frame rate are still unmeasured (option B).
 - Not done: typing the session out line by line (needs several screen frames; GPU memory is the concern), mouse-parallax camera drift.
 
+### A3. Soldering station (shipped 2026-10-23)
+The left speaker is gone (its 3 mesh references are stripped from `desktop_pc/scene.gltf`, a 3-line diff; the file uses CRLF line endings, so edit it with `newline=""` or the diff explodes). In its place `SolderStation.jsx` builds a station from primitives: an ESP32-style board in a PCB holder, and an iron with a glowing tip resting in a coil stand, plus a faint smoke wisp (off under reduced motion). It is a child of the model's `<primitive>`, so it uses the desk model's own units; `PLACE`/`SCALE` at the top of the file position it. It sits in front of the monitor's left edge because behind it the monitor hid the iron. The phone model was rebuilt from the edited source (the two speakers had been merged into one mesh there). Verified on desktop and a 3x phone render; the left edge of the base is very slightly cropped on narrow phones.
+Possible next: a real model from Blender, or tweaking what is on the board.
+
 ### B. Real-device performance check
 Measure instead of guessing: Chrome remote debugging on the phone, look at frame time and GPU memory with the sway running. If it is heavy, lower the sway (or drop it), cap `dpr` to 1, or pause rendering while the nav menu is open.
 
@@ -78,4 +82,6 @@ Expect ~2.0 MB. A simple `optimize ... --texture-compress webp --texture-size 10
 | Screen: dense agent-session terminal + max anisotropy | Looks sharp and real on desktop and phone; shipped locally 2026-10-23 |
 | Screen glow `PointLight` at 1.6 | Washed the whole desk lavender and flattened the screen's dark background |
 | Screen glow at 0.45 | Almost invisible (desk +1 to 3 levels) |
-| Screen glow at 0.9 | Faint cool spill on desk and screen, text still crisp; shipped locally |
+| Screen glow at 0.9 | Faint cool spill on desk and screen, text still crisp; shipped |
+| Solder station behind the monitor plane (where the speaker was) | Monitor hid the iron; moved forward and scaled 1.35x |
+| Solder station at x -0.6, scale 1.35 | Iron and board fully visible on desktop and phone; shipped |
