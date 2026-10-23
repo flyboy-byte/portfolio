@@ -27,6 +27,15 @@ Cheapest first:
 3. Heavier: edit the model in Blender (swap the desk for a workbench, add a radio, a wrench, an ESP32 board), re-export glTF, rebuild the mobile GLB. Needs Blender and modeling time.
 4. Heaviest: a custom scene (car, engine bay, radio rack) in Blender. Same pipeline.
 
+### A2. Animation and lighting (shipped locally 2026-10-23)
+All in `Computers.jsx`, all skipped under `prefers-reduced-motion`, all paused while the hero is scrolled out of view:
+- Screen glow: a soft purple `PointLight` just in front of the monitor (`GLOW_INTENSITY`), breathing about 10%.
+- RGB fans and speaker rings: masked emissive materials get an `onBeforeCompile` hue rotation driven by a shared uniform. A plain emissive tint would have destroyed the rainbow.
+- Spotlight sweep: the key light drifts about 6 units on x, so the glare on the screen slowly moves.
+- Cursor blink: swaps the screen's `map` and `emissiveMap` between the glTF texture and `public/models/screen-nocursor.webp` every 0.53 s. Both frames come from `tools/monitor-screen/render.sh`.
+- Cost: the desktop canvas used to render only on demand (idle most of the time). It now redraws every frame while the hero is on screen, as the phone sway already did. Real-device battery and frame rate are still unmeasured (option B).
+- Not done: typing the session out line by line (needs several screen frames; GPU memory is the concern), mouse-parallax camera drift.
+
 ### B. Real-device performance check
 Measure instead of guessing: Chrome remote debugging on the phone, look at frame time and GPU memory with the sway running. If it is heavy, lower the sway (or drop it), cap `dpr` to 1, or pause rendering while the nav menu is open.
 
@@ -67,3 +76,6 @@ Expect ~2.0 MB. A simple `optimize ... --texture-compress webp --texture-size 10
 | Screen: huge-type terminal (4 lines, readable at any size) | Clean but sparse; Logan said partly readable/unreadable but super sharp feels more real |
 | Screen: CAD + terminal 50/50 | Offered as an option only; Logan did not want it |
 | Screen: dense agent-session terminal + max anisotropy | Looks sharp and real on desktop and phone; shipped locally 2026-10-23 |
+| Screen glow `PointLight` at 1.6 | Washed the whole desk lavender and flattened the screen's dark background |
+| Screen glow at 0.45 | Almost invisible (desk +1 to 3 levels) |
+| Screen glow at 0.9 | Faint cool spill on desk and screen, text still crisp; shipped locally |
