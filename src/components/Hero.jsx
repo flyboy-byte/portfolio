@@ -12,7 +12,7 @@ import React, { Suspense } from "react";
         </div>
         <div>
           <h1 className={`${styles.heroHeadText} text-white`}>
-            Hi, I'm <span className="text-[#915EFF]">Logan</span>
+            Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#915EFF] to-[#ffb340]">Logan</span>
           </h1>
           <p className={`${styles.heroSubText} mt-2 text-white-100`}>
             I work on{" "}

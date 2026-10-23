@@ -4,9 +4,10 @@ module.exports = {
     theme: {
       extend: {
         colors: {
-          primary: '#050816', secondary: '#aaa6c3', tertiary: '#151030',
+          primary: '#050816', accent: '#ffb340', secondary: '#aaa6c3', tertiary: '#151030',
           'black-100': '#100d25', 'black-200': '#090325', 'white-100': '#f3f3f3',
         },
+        fontFamily: { mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'] },
         boxShadow: { card: '0 35px 120px -15px #211e35' },
         screens: { xs: '450px' },
         backgroundImage: {

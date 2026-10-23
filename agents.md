@@ -81,8 +81,11 @@ c.proxy('github', '/repos/flyboy-byte/portfolio/contents/PATH', { method: 'GET' 
 | `bg-tertiary` | `#151030` | Cards, panels |
 | `text-secondary` | `#aaa6c3` | Subtext, muted labels |
 | Accent purple | `#915EFF` | Headings, tags, borders, hover fills |
+| `text-accent` / `bg-accent` | `#ffb340` | Amber accent (2026-10-23): Resume and Send buttons, section labels, end of the hero name gradient |
 | `black-gradient` | CSS class | Mobile menu background |
 | `violet-gradient` | CSS class | Hero vertical line |
+
+Fonts are self-hosted via `@fontsource/poppins` (400-900) and `@fontsource/jetbrains-mono` (500), imported in `src/main.jsx`; `font-mono` maps to JetBrains Mono. A global `* { font-family: Poppins }` rule in `index.css` applies to every element, so put `font-mono` on the leaf element that holds the text, not on a wrapper.
 
 ### Shared style strings (src/styles.js)
 ```js
@@ -92,7 +95,7 @@ styles.padding    // "sm:px-16 px-6 sm:py-16 py-10"
 styles.heroHeadText    // large responsive font for hero h1
 styles.heroSubText     // responsive font for hero subtitle
 styles.sectionHeadText // "text-white font-black md:text-[60px] sm:text-[50px] xs:text-[40px] text-[30px]"
-styles.sectionSubText  // "sm:text-[18px] text-[14px] text-secondary uppercase tracking-wider"
+styles.sectionSubText  // monospace, amber, uppercase, tracking-[0.2em]
 ```
 
 ---

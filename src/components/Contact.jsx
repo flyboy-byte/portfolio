@@ -31,7 +31,7 @@ import React, { useRef, useState, Suspense } from "react";
                   className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium" />
               </label>
             ))}
-            <button type="submit" className="bg-tertiary py-3 px-8 rounded-xl text-white font-bold shadow-md shadow-primary w-full sm:w-fit">
+            <button type="submit" className="bg-accent py-3 px-8 rounded-xl text-primary font-bold shadow-md shadow-primary w-full sm:w-fit hover:brightness-110 transition">
               {loading?"Sending…":"Send"}
             </button>
 
