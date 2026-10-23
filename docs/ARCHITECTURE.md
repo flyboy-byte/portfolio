@@ -18,8 +18,8 @@ Models are self-hosted in `public/models/` (since 2026-10-18; they used to load 
 - `desktop_pc/` — stock Sketchfab glTF, served to desktop (>768px). ~8.8 MB, 685 meshes. Left untouched on purpose.
 - `pc-mobile.glb` — the same model, optimized for phones (~2.0 MB): meshes merged, meshopt-compressed geometry, WebP textures capped at 1024px except the 1920x1080 monitor screen. Needs `EXT_meshopt_compression` + `EXT_texture_webp` (drei's `useGLTF` and three's GLTFLoader handle both).
 - `planet/` — stock Sketchfab glTF for the Contact globe. Not optimized (~2 MB).
-- **Icons**: Fetched from Iconify API (see `src/assets/index.js`).
-- **Project card images**: GitHub OpenGraph URLs (see `src/assets/index.js`).
+- **Icons**: self-hosted in `public/icons/` (SVGs from `@iconify-json` packages; the Iconify API rate-limits with 429).
+- **Project card images**: generated SVGs in `public/projects/`.
 
 Both models are CC-BY-4.0 (see Credits in `README.md`). Build steps for `pc-mobile.glb` and the follow-up plan are in `docs/3D_PLAN.md`.
 

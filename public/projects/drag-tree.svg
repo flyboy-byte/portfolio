@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-label="drag-tree">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d1836"/><stop offset="1" stop-color="#0b0820"/></linearGradient>
+<radialGradient id="glow" cx="0.5" cy="0.5" r="0.55"><stop offset="0" stop-color="#ffc62e" stop-opacity="0.38"/><stop offset="1" stop-color="#ffc62e" stop-opacity="0"/></radialGradient>
+<pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#ffffff" stroke-opacity="0.05"/></pattern>
+</defs>
+<rect width="640" height="400" fill="url(#bg)"/><rect width="640" height="400" fill="url(#grid)"/><rect width="640" height="400" fill="url(#glow)"/>
+<g transform="translate(117 68) scale(1.35)"><rect x="124" y="-20" width="52" height="236" rx="14" fill="#0b0820" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2"/><circle cx="150" cy="28" r="19" fill="#ffc62e"/><circle cx="150" cy="28" r="27" fill="none" stroke="#ffc62e" stroke-opacity="0.3" stroke-width="4"/><circle cx="150" cy="80" r="19" fill="#ffc62e"/><circle cx="150" cy="80" r="27" fill="none" stroke="#ffc62e" stroke-opacity="0.3" stroke-width="4"/><circle cx="150" cy="132" r="19" fill="#ffc62e"/><circle cx="150" cy="132" r="27" fill="none" stroke="#ffc62e" stroke-opacity="0.3" stroke-width="4"/><circle cx="150" cy="184" r="19" fill="#27d97a"/><circle cx="150" cy="184" r="27" fill="none" stroke="#27d97a" stroke-opacity="0.3" stroke-width="4"/><text x="190" y="230" font-family="monospace" font-size="20" fill="#27d97a">0.013</text></g>
+</svg>

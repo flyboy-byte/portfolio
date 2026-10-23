@@ -21,7 +21,7 @@ See [agents.md](./agents.md) for the full AI handoff guide — deployment pipeli
   - EmailJS fully configured (`service_vsyd175` / `template_31v002c`).
   - Resume served at `/Resume.pdf`.
   - Custom domain `logannightingale.com` via `public/CNAME`, served through GitHub Pages.
-  - All external 3D/icon assets via CDN.
+  - Icons, project card art and 3D models are self-hosted (no runtime CDN).
 
 ---
 
@@ -30,14 +30,14 @@ See [agents.md](./agents.md) for the full AI handoff guide — deployment pipeli
 - **Framework**: React 18 + Vite
 - **Styling**: Tailwind CSS + Framer Motion
 - **3D Engine**: Three.js (@react-three/fiber + @react-three/drei)
-- **Icons**: Iconify (dynamic SVG loading via CDN)
+- **Icons**: self-hosted SVGs in `public/icons/` (from `@iconify-json` sets)
 - **Contact**: EmailJS (`logan07night@gmail.com`)
 
 ## 🛠️ Key Features
 
 - **3D Hero**: Interactive desktop PC model with typewriter skill cycling. Self-hosted in `public/models/`; phones get an optimized GLB (see [docs/3D_PLAN.md](./docs/3D_PLAN.md)).
 - **Maker-Centric**: GM ASEP, ASE A1/A2/A3/A4/A5/A6/A7/A9, Extra Class ham radio.
-- **Project Cards**: crosslight, drag-tree, disc-tracker, portfolio, riscv-pico, moomoo-trader with GitHub OpenGraph previews.
+- **Project Cards**: crosslight, drag-tree, disc-tracker, portfolio, riscv-pico, moomoo-trader with self-hosted card art in `public/projects/`.
 - **Tech Stack Balls**: Linux, Git, Arduino, Python, TypeScript, React, Three.js, Bash.
 - **Contact Form**: Live EmailJS integration.
 - **Blog**: Markdown posts in `src/posts/` with drafts, RSS and syntax highlighting; see [docs/BLOG.md](./docs/BLOG.md).

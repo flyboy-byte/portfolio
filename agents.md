@@ -198,13 +198,11 @@ Controls navbar hash links (not Resume/GitHub buttons — those are hardcoded in
 ```js
 { name: "Linux", icon: linux },
 ```
-Icon must be exported from `src/assets/index.js` as an Iconify SVG URL:
+Icon must be exported from `src/assets/index.js` as a same-origin SVG path. Icons are self-hosted in `public/icons/` (changed 2026-10-23: the Iconify and GitHub OpenGraph CDNs rate-limited with HTTP 429 and left icons and card images broken). To add one, save the SVG from the npm packages `@iconify-json/<set>` (e.g. `devicon`, `mdi`, `simple-icons`) into `public/icons/`:
 ```js
-export const myIcon = "https://api.iconify.design/devicon:python.svg";
-// With color override:
-export const myIcon = "https://api.iconify.design/mdi:radio-tower.svg?color=white";
+export const myIcon = "/icons/python.svg";
 ```
-Ball.jsx canvas-rasterizes the SVG URL to a WebGL texture — Iconify CDN URLs work, external SVGs may have CORS issues.
+Ball.jsx canvas-rasterizes the SVG URL to a WebGL texture; same-origin files avoid CORS problems. Icons sit on a light ball, so avoid white fills.
 
 ### experiences (Experience/timeline section)
 ```js
@@ -228,15 +226,15 @@ Ball.jsx canvas-rasterizes the SVG URL to a WebGL texture — Iconify CDN URLs w
     { name: "Arch Linux", color: "green-text-gradient" },
     { name: "CLI", color: "pink-text-gradient" },
   ],
-  image: myProjectVar,        // imported from assets (GitHub OG URL or other)
+  image: myProjectVar,        // imported from assets (self-hosted file in public/projects/)
   source_code_link: "https://github.com/flyboy-byte/repo-name",
 },
 ```
 Tag colors: `blue-text-gradient` | `green-text-gradient` | `pink-text-gradient`
 
-Project images use GitHub's OpenGraph CDN — no upload needed:
+Project card art is self-hosted in `public/projects/<name>.svg` (640x400, motif-only; the card already prints the name). Do not use `opengraph.githubassets.com`: it is rate-limited (100 requests per window per IP).
 ```js
-export const myProject = "https://opengraph.githubassets.com/1/flyboy-byte/repo-name";
+export const myProject = "/projects/repo-name.svg";
 ```
 
 ### papers (Papers/Whitepapers section)
