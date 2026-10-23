@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Decal, Float, Preload } from "@react-three/drei";
 import * as THREE from "three";
 import CanvasLoader from "../Loader";
+import { useInView } from "../../utils/useInView";
 
 const useRasterTexture = (url) => {
   const [texture, setTexture] = useState(null);
@@ -108,19 +109,24 @@ const DraggableBall = ({ iconUrl }) => {
   );
 };
 
-const BallCanvas = ({ icon }) => (
-  <Canvas
-    frameloop="always"
-    dpr={[1, 2]}
-    gl={{ preserveDrawingBuffer: true }}
-    camera={{ position: [0, 0, 20], fov: 25 }}
-    style={{ touchAction: "none" }}
-  >
-    <Suspense fallback={<CanvasLoader />}>
-      <DraggableBall iconUrl={icon} />
-    </Suspense>
-    <Preload all />
-  </Canvas>
-);
+const BallCanvas = ({ icon }) => {
+  const [ref, inView] = useInView();
+  return (
+    <div ref={ref} style={{ width: "100%", height: "100%" }}>
+      <Canvas
+        frameloop={inView ? "always" : "never"}
+        dpr={[1, 2]}
+        gl={{ preserveDrawingBuffer: true }}
+        camera={{ position: [0, 0, 20], fov: 25 }}
+        style={{ touchAction: "none" }}
+      >
+        <Suspense fallback={<CanvasLoader />}>
+          <DraggableBall iconUrl={icon} />
+        </Suspense>
+        <Preload all />
+      </Canvas>
+    </div>
+  );
+};
 
 export default BallCanvas;

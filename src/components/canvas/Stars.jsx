@@ -2,6 +2,7 @@ import { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial, Preload } from "@react-three/drei";
 import * as random from "maath/random/dist/maath-random.esm";
+import { useInView } from "../../utils/useInView";
 import "../../index.css";
 
 const NUM_STARS = 1500; // Adjust the number of stars as needed
@@ -33,16 +34,19 @@ const Stars = () => {
   );
 };
 
-const StarsCanvas = () => (
-  <div className="stars-canvas-container">
-    <Canvas camera={{ position: [0, 0, 1] }}>
-      <Suspense fallback={null}>
-        <Stars />
-      </Suspense>
+const StarsCanvas = () => {
+  const [ref, inView] = useInView();
+  return (
+    <div ref={ref} className="stars-canvas-container">
+      <Canvas frameloop={inView ? "always" : "never"} camera={{ position: [0, 0, 1] }}>
+        <Suspense fallback={null}>
+          <Stars />
+        </Suspense>
 
-      <Preload all />
-    </Canvas>
-  </div>
-);
+        <Preload all />
+      </Canvas>
+    </div>
+  );
+};
 
 export default StarsCanvas;
