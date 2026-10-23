@@ -5,7 +5,8 @@ Status: shipped and live (2026-10-18). Nothing below is in progress. The options
 ## Where it stands
 
 - Stock PC and planet glTFs are self-hosted in `public/models/` (previously fetched from `lohitkolluri/Portfolio-Website` on GitHub, which was a single point of failure).
-- Desktop: stock `desktop_pc/scene.gltf`, unchanged behavior (`OrbitControls`, shadows, `frameloop="demand"`).
+- Desktop: `desktop_pc/scene.gltf`, stock apart from the monitor screen texture (see below), same behavior (`OrbitControls`, shadows, `frameloop="demand"`).
+- Monitor screen (2026-10-23): the template's VS Code screenshot (Logan does not use VS Code) is replaced with a full-screen agent-style terminal, dense on purpose: partly readable at the on-screen size (about 440px wide on desktop, 190px on phones), which looks like a real, sharp screen. Source: `tools/monitor-screen/screen.html`; render and install with `tools/monitor-screen/render.sh public/models/desktop_pc/textures/Material.074_30_baseColor.png` (the image is stored vertically flipped; the script handles that), then rebuild `pc-mobile.glb` below. The session text uses real facts only (commands and counts from the 2026-10-23 icon commit). `Computers.jsx` sets max anisotropy on that material so the screen stays sharp off-axis.
 - Mobile (<=768px): `pc-mobile.glb`, 8.8 MB -> 2.0 MB. See `docs/ARCHITECTURE.md` for the mobile-specific setup.
 - Verified only in headless Chrome with software rendering, plus one screenshot from Logan's phone (Brave, Android). Real-device frame rate and battery were never measured.
 - Verdict from Logan: "pretty good." The model is still a third-party template asset with tuning on top, so it is polished but not distinctly his. That is the actual motivation for the options below.
@@ -21,7 +22,7 @@ Status: shipped and live (2026-10-18). Nothing below is in progress. The options
 
 ### A. Personalize the scene (the real goal)
 Cheapest first:
-1. Replace the monitor screen texture with something that is Logan's: a real terminal, the portfolio code, a GDS2/diagnostic screen, an SDR waterfall. The screen texture is `Material.074_30_baseColor.png` (1920x1080) in `desktop_pc/textures/`; in `pc-mobile.glb` it is the one non-square 1920x1080 WebP. Swap the image, re-run the mobile build.
+1. ~~Replace the monitor screen texture with something that is Logan's~~ — DONE (2026-10-23): agent-style terminal, see above. Other screens (CAD + terminal split, GDS2/diagnostic, SDR waterfall) were considered; Logan chose the terminal. To change it, edit `tools/monitor-screen/screen.html`, render, re-run the mobile build.
 2. Re-skin small props via texture swaps (mousepad, wallpaper on screen, case fan colors).
 3. Heavier: edit the model in Blender (swap the desk for a workbench, add a radio, a wrench, an ESP32 board), re-export glTF, rebuild the mobile GLB. Needs Blender and modeling time.
 4. Heaviest: a custom scene (car, engine bay, radio rack) in Blender. Same pipeline.
@@ -63,3 +64,6 @@ Expect ~2.0 MB. A simple `optimize ... --texture-compress webp --texture-size 10
 | Keep screen at 1920x1080, rest 1024px (2.0 MB) | Screen crisp; shipped |
 | Shift model -0.3/+1.1 to fit the tower | Overshot, left speaker clipped |
 | Shift -0.15/+0.55, fov 52, sway 0.08 rad | Whole desk fits; shipped |
+| Screen: huge-type terminal (4 lines, readable at any size) | Clean but sparse; Logan said partly readable/unreadable but super sharp feels more real |
+| Screen: CAD + terminal 50/50 | Offered as an option only; Logan did not want it |
+| Screen: dense agent-session terminal + max anisotropy | Looks sharp and real on desktop and phone; shipped locally 2026-10-23 |

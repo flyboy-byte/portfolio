@@ -15,7 +15,7 @@ All text content, experience data, and project metadata are centralized in `src/
 
 ### 3D Asset Strategy
 Models are self-hosted in `public/models/` (since 2026-10-18; they used to load from the template author's repo):
-- `desktop_pc/` — stock Sketchfab glTF, served to desktop (>768px). ~8.8 MB, 685 meshes. Left untouched on purpose.
+- `desktop_pc/` — Sketchfab glTF, served to desktop (>768px). ~8.8 MB, 685 meshes. Left stock on purpose except the monitor screen texture, which is replaced (source in `tools/monitor-screen/`).
 - `pc-mobile.glb` — the same model, optimized for phones (~2.0 MB): meshes merged, meshopt-compressed geometry, WebP textures capped at 1024px except the 1920x1080 monitor screen. Needs `EXT_meshopt_compression` + `EXT_texture_webp` (drei's `useGLTF` and three's GLTFLoader handle both).
 - `planet/` — stock Sketchfab glTF for the Contact globe. Not optimized (~2 MB).
 - **Icons**: self-hosted in `public/icons/` (SVGs from `@iconify-json` packages; the Iconify API rate-limits with 429).

@@ -12,6 +12,19 @@ const Computer = ({ url, isMobile }) => {
   const { invalidate, gl } = useThree();
   const visible = useRef(true);
 
+  // The monitor screen is a dense 1920x1080 texture seen small and slightly off-axis; max anisotropy keeps it sharp instead of mushy.
+  useEffect(() => {
+    const max = gl.capabilities.getMaxAnisotropy();
+    scene.traverse((o) => {
+      if (!o.isMesh || o.material?.name !== "Material.074_30") return;
+      [o.material.map, o.material.emissiveMap].forEach((t) => {
+        if (!t) return;
+        t.anisotropy = max;
+        t.needsUpdate = true;
+      });
+    });
+  }, [scene, gl]);
+
   useEffect(() => {
     if (!isMobile) return;
     const io = new IntersectionObserver(([e]) => {

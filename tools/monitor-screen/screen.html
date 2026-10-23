@@ -1,0 +1,35 @@
+<!doctype html>
+<!-- Source for the 3D hero's monitor screen (1920x1080): a full-screen agent-style terminal.
+     Dense on purpose: at ~440px (desktop) or ~190px (phone) it is partly readable, which reads as a real, sharp screen.
+     The session is a real one (commands and counts come from the 2026-10-23 icon commit). Render + install: see docs/3D_PLAN.md. -->
+<meta charset="utf-8">
+<style>
+@font-face{font-family:JB;font-weight:500;src:url(../../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2)}
+@font-face{font-family:JB;font-weight:700;src:url(../../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2)}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0720}
+body{font-family:JB,monospace;font-weight:500;color:#e9e6ff;position:relative}
+.glow{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 10%,#915eff26,#915eff00 55%),radial-gradient(ellipse at 95% 100%,#ffb3401c,#ffb34000 50%)}
+.box{position:absolute;left:60px;top:40px;width:1800px;box-sizing:border-box;border:5px solid #ffb340;border-radius:22px;padding:14px 40px;font-size:60px;line-height:80px}
+.box b{color:#ffb340}.dim{color:#8f89b8;font-size:42px}
+.t{position:absolute;left:60px;top:210px;font-size:42px;line-height:52px;white-space:pre}
+.big{font-size:66px;line-height:84px}
+.a{color:#ffb340;font-weight:700}.g{color:#27d97a;font-weight:700}.h{color:#fff;font-weight:700}.d{color:#8f89b8}.p{color:#27d97a}.m{color:#ff5a6a}
+.cur{display:inline-block;width:26px;height:50px;background:#ffb340;vertical-align:-8px}
+</style>
+<div class="glow"></div>
+<div class="box"><b>*</b> <span class="h">Logan Night</span> <span class="dim">  ~/projects/portfolio</span></div>
+<div class="t"><span class="big"><span class="a">&gt;</span> <span class="h">fix it, ship it</span></span>
+<span class="g">●</span> Bash(node icons.mjs public/icons)
+<span class="d">  └</span> wrote 14 icons
+<span class="g">●</span> Edit(src/assets/index.js)
+<span class="d">  └</span> icons now self-hosted
+<span class="g">●</span> Bash(npm run build)
+<span class="d">  └</span> <span class="g">✓</span> built in 9.03s
+<span class="g">●</span> Bash(git commit)
+<span class="d">  └</span> 26 files changed, <span class="p">108 insertions(+)</span>, <span class="m">37 deletions(-)</span>
+<span class="g">●</span> Bash(git push)
+<span class="d">  └</span> <span class="g">deployed, live</span>
+<span class="d"> public/icons/*.svg                    </span><span class="p">+14</span>
+<span class="d"> public/projects/*.svg                 </span><span class="p">+6</span>
+<span class="d"> src/assets/index.js                   </span><span class="p">+20 </span><span class="m">-20</span>
+<span class="a">&gt;</span> <span class="cur"></span></div>
