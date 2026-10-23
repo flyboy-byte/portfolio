@@ -12,7 +12,7 @@ Status: live and healthy (2026-10-23). Last deployed commit `6b75e59` (CI green)
   - `11e7fe4` favicon, apple-touch icon, 1200x630 `og-image.png`, OG/Twitter/canonical tags in `index.src.html`.
   - `276005b` monitor screen: the template's VS Code screenshot replaced with a dense agent-style terminal showing a real session. Source and renderer: `tools/monitor-screen/`. Max anisotropy on the screen material.
   - `9b083b0` hero animation and lighting in `Computers.jsx`: screen glow (`GLOW_INTENSITY` 0.9), RGB fan hue cycle (shader), spotlight sweep, cursor blink (`public/models/screen-nocursor.webp`). All skipped under `prefers-reduced-motion`, paused off-screen.
-  - `6b75e59` left speaker removed (3 mesh refs stripped from `desktop_pc/scene.gltf`); `SolderStation.jsx` adds a soldering station (ESP32-style board in a PCB holder, iron in a coil stand, glowing tip, faint smoke) built from primitives. `PLACE`/`SCALE` at the top of that file position it.
+  - `6b75e59` left speaker removed (3 mesh refs stripped from `desktop_pc/scene.gltf`); `SolderStation.jsx` adds a soldering station (ESP32-style board in a PCB holder, iron in a coil stand, glowing tip, faint smoke) built from primitives. Rebuilt the same day at real scale after Logan said it looked bad: station with LED readout, helping hands with a populated board, iron in a helix coil stand with brass wool, solder spool, cable; layout constants at the top of the file; dev preview at `tools/station-preview/`.
 
 ## Verified vs not
 - Logan checked the live site on his phone (Brave, Android) and the Slack/Discord share preview: both "pretty damn solid" (2026-10-23). That was before the solder station went live.
@@ -20,7 +20,7 @@ Status: live and healthy (2026-10-23). Last deployed commit `6b75e59` (CI green)
 - Not confirmed in a browser on the live domain: `/blog` rendering (curl shows the expected Pages 404 fallback).
 
 ## Open threads (all optional, independent)
-- **Awaiting Logan's feedback on the solder station** (he asked to push it so he could give feedback live): possible tweaks are position/scale, board contents (generic ESP32 style now; he may want it to match a real build), extra props (solder spool, sponge, cable), the left base corner is very slightly clipped on narrow phones, smoke is faint.
+- **Awaiting Logan's feedback on the rebuilt solder station** (2026-10-23): possible tweaks are board contents (generic ESP32 style; he may want it to match a real build), layout, smoke strength. The old phone-clipping issue is gone (everything at z <= 80 cm).
 - Typing animation on the monitor (needs several screen frames; GPU memory is the concern), mouse-parallax camera drift.
 - Lighter Linux icon (`public/icons/linux.svg` is 195 KB because of an embedded Tux).
 - Mobile pixel-ratio cap is 1.5 (`dpr={[1, 1.5]}` in `Computers.jsx`); 2 would sharpen the phone view at a GPU/battery cost. Logan has not asked for it.
